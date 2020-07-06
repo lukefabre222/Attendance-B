@@ -1,6 +1,6 @@
 default: &default
   adapter: postgresql
-  encoding: unicode
+  encoding: utf8
   pool: 5
   # 以下、3行追加
   username: postgres # 設定したPostgreSQL Accountと同一のもの
