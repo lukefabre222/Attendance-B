@@ -1,0 +1,6 @@
+ja:
+  views:
+    sessions:
+      new:
+        email: メールアドレス
+        password: パスワード
