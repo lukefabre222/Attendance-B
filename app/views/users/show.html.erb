@@ -22,6 +22,18 @@
       <td>締日　<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
+  <% if current_user.superior %>
+    <div class = "row">
+      <p>
+        【所属長承認申請のお知らせ】
+        <% unless has_month_apply.count == 0 %>
+          <%=  link_to "通知が#{has_month_apply.count}件あります。", "#", class:"notice "%>
+        <% end %>
+      </p>
+      <p>【勤怠変更申請のお知らせ】</p>
+      <p>【残業申請のお知らせ】</p>
+    </div>
+  <% end %>
   <div class = "row">
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
     <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
@@ -99,10 +111,39 @@
     </tbody>
     <tfoot>
       <tr>
+        <td></td>
         <td colspan = "2"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td>
         <td colspan = "6"></td>
         <td><%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
         <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <%= form_with(model: @user, url: update_month_apply_path(@user, @first_day), method: :patch) do |f| %>
+            <div class="form-group">
+              <% @dates.each do |date| %>
+                <%= fields_for "attendances[]", date do |af| %>
+                  <% if date.month_apply_status.blank? %>
+                    上長承認：未申請
+                  <% elsif date.month_apply_status == "申請中" %>
+                    上長承認：<%= User.find(date.superior_id).name %>へ申請中
+                  <% else %>
+                    上長承認：<%= User.find(date.superior_id).name %>から<%= date.month_apply_status%>
+                  <% end %>
+                  <%= af.collection_select :superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
+                  <%= af.hidden_field :month_apply_status, value: "申請中" %>
+                  <%= af.hidden_field :month_apply_date, value: @first_day %>
+                <% end %>
+                <% break %>
+              <% end %>
+            </div>
+            <div>
+              <%= f.submit "申請する", data:{confirm: "申請してよろしいですか？"}, class: "btn btn-primary"%>
+            </div>
+          <% end %>
+        </td>
       </tr>
     </tfoot>
   </table>

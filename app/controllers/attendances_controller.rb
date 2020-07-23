@@ -37,10 +37,29 @@ class AttendancesController < ApplicationController
     end  
   end
 
+  def update_month_apply
+    @user = User.find(params[:id])
+    month_apply_params.each do |id, item|
+      if item[:superior_id].blank?
+        flash[:danger] = "申請先の上長を選択してください"
+        redirect_to user_url(date: params[:date])
+      else
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+        flash[:success] = "申請が完了しました"
+        redirect_back(fallback_location: root_path)
+      end
+    end
+  end
+
   private
 
     def attendances_params
       params.permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+
+    def month_apply_params
+      params.permit(attendances: [:superior_id, :month_apply_status, :month_apply_date])[:attendances]
     end
 
 end

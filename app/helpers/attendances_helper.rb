@@ -23,7 +23,7 @@ module AttendancesHelper
   def user_attendances_month_date
     @user.attendances.where('worked_on >= ? and worked_on <= ?', @first_day, @last_day).order('worked_on')
   end
-
+  
   def attendances_invalid?
     attendances = true
     attendances_params.each do |id, item|
@@ -38,5 +38,10 @@ module AttendancesHelper
       end
     end
     return attendances
+  end
+
+  #　１ヶ月勤怠申請が自分に来ているか
+  def has_month_apply
+    User.joins(:attendances).where(attendances: {superior_id: current_user.id}).where(attendances: {month_apply_status: "申請中"})
   end
 end

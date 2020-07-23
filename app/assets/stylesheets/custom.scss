@@ -148,3 +148,17 @@ input, textarea, select, .uneditable-input{
 .wday0 {
   color: red;
 }
+
+/* superior notice */
+.notice{
+  border: solid 2px red;
+  color: red;
+  font-weight: bold;
+}
+
+.notice:hover{
+  border: solid 2px orangered;
+  color:orangered;
+  font-weight: bold;
+  text-decoration: none;
+}

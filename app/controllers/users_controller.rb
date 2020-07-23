@@ -21,6 +21,7 @@ class UsersController < ApplicationController
     end
     @dates = user_attendances_month_date
     @worked_sum = @dates.where.not(started_at: nil).count
+    @superiors = User.where(superior: true).where.not(id: current_user.id)
   end
 
 
