@@ -162,3 +162,8 @@ input, textarea, select, .uneditable-input{
   font-weight: bold;
   text-decoration: none;
 }
+
+/* 上長から否認されている場合のフォント*/
+.danger-notice{
+  color: red;
+}

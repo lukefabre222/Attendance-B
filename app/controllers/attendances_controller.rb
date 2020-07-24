@@ -52,14 +52,39 @@ class AttendancesController < ApplicationController
     end
   end
 
-  private
+  def notice_month_apply
+    @users = month_applying_users #@usersに１ヶ月承認待ちのユーザーを代入
+  end
 
+  def confirmation_month_apply
+    confirmation_month_apply_params.each do |id, item|
+      if item[:month_apply_check] == "0"
+        flash[:danger] = "チェックを入れてから、送信してください"
+        redirect_back(fallback_location: root_path)
+        return
+      else
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+        flash[:success] = "#{item[:month_apply_status]}が完了しました"
+        redirect_to user_url(:id => current_user.id)
+        return
+      end
+    end
+  end
+
+  private
+    # 1ヶ月更新時のstrong_params
     def attendances_params
       params.permit(attendances: [:started_at, :finished_at, :note])[:attendances]
     end
 
+    # １ヶ月申請時のstrong_params
     def month_apply_params
       params.permit(attendances: [:superior_id, :month_apply_status, :month_apply_date])[:attendances]
+    end
+    # １ヶ月承認時のstrong_params
+    def confirmation_month_apply_params
+      params.permit(attendances: [:month_apply_status, :month_apply_check])[:attendances]
     end
 
 end

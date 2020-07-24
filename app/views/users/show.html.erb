@@ -22,12 +22,12 @@
       <td>締日　<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
-  <% if current_user.superior %>
+  <% if current_user.superior && current_user?(@user) %>
     <div class = "row">
       <p>
         【所属長承認申請のお知らせ】
         <% unless has_month_apply.count == 0 %>
-          <%=  link_to "通知が#{has_month_apply.count}件あります。", "#", class:"notice "%>
+          <%=  link_to "通知が#{has_month_apply.count}件あります。", notice_month_apply_path(@user,@dates), remote: true, class:"notice "%>
         <% end %>
       </p>
       <p>【勤怠変更申請のお知らせ】</p>
@@ -121,30 +121,37 @@
         <td></td>
         <td></td>
         <td>
-          <%= form_with(model: @user, url: update_month_apply_path(@user, @first_day), method: :patch) do |f| %>
-            <div class="form-group">
-              <% @dates.each do |date| %>
-                <%= fields_for "attendances[]", date do |af| %>
-                  <% if date.month_apply_status.blank? %>
-                    上長承認：未申請
-                  <% elsif date.month_apply_status == "申請中" %>
-                    上長承認：<%= User.find(date.superior_id).name %>へ申請中
-                  <% else %>
-                    上長承認：<%= User.find(date.superior_id).name %>から<%= date.month_apply_status%>
+          <% if current_user?(@user) %>
+            <%= form_with(model: @user, url: update_month_apply_path(@user, @first_day), method: :patch) do |f| %>
+              <div class="form-group">
+                <% @dates.each do |date| %>
+                  <%= fields_for "attendances[]", date do |af| %>
+                    <% if date.month_apply_status.blank? %>
+                      上長承認：未申請
+                    <% elsif date.month_apply_status == "申請中" %>
+                      上長承認：<%= User.find(date.superior_id).name %>へ申請中
+                    <% else %>
+                      <p class="<%= "danger-notice" if date.month_apply_status == "否認" %>">
+                      上長承認：<%= User.find(date.superior_id).name %>から<%= date.month_apply_status%>
+                      </p>
+                    <% end %>
+                    <%= af.collection_select :superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
+                    <%= af.hidden_field :month_apply_status, value: "申請中" %>
+                    <%= af.hidden_field :month_apply_date, value: @first_day %>
                   <% end %>
-                  <%= af.collection_select :superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
-                  <%= af.hidden_field :month_apply_status, value: "申請中" %>
-                  <%= af.hidden_field :month_apply_date, value: @first_day %>
+                  <% break %>
                 <% end %>
-                <% break %>
-              <% end %>
-            </div>
-            <div>
-              <%= f.submit "申請する", data:{confirm: "申請してよろしいですか？"}, class: "btn btn-primary"%>
-            </div>
+              </div>
+              <div>
+                <%= f.submit "申請する", data:{confirm: "申請してよろしいですか？"}, class: "btn btn-primary"%>
+              </div>
+            <% end %>
           <% end %>
         </td>
       </tr>
     </tfoot>
   </table>
 </div>
+
+<!-- モーダル -->
+<div id="notice_month_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>

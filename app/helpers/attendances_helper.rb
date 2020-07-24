@@ -44,4 +44,9 @@ module AttendancesHelper
   def has_month_apply
     User.joins(:attendances).where(attendances: {superior_id: current_user.id}).where(attendances: {month_apply_status: "申請中"})
   end
+
+  # 1ヶ月承認待ちのユーザー
+  def month_applying_users
+    User.joins(:attendances).where.not(attendances:{superior_id: nil}).where(attendances: {month_apply_status: "申請中"})
+  end
 end
