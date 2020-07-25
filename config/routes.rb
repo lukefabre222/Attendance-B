@@ -8,9 +8,16 @@ Rails.application.routes.draw do
   patch 'update-basic-info',  to: 'users#update_basic_info'
   get 'users/:id/attendances/:date/edit', to: 'attendances#edit', as: :edit_attendances
   patch 'users/:id/attendances/:date/update', to: 'attendances#update', as: :update_attendances
+  #　１ヶ月申請関連ルーティング
   patch 'users/:id/attendances/:date/update_month_apply', to: 'attendances#update_month_apply', as: :update_month_apply
   get 'users/:id/attendances/:date/notice_month_apply', to: 'attendances#notice_month_apply', as: :notice_month_apply
   patch 'confirmation_month_apply', to: 'attendances#confirmation_month_apply', as: :confirmation_month_apply
+  #  残業申請関連ルーティング
+  get 'users/:id/attendances/:date/overtime_apply', to: 'attendances#overtime_apply', as: :overtime_apply
+  patch 'user/:id/attendances/:date/update_overtime_apply', to: 'attendances#update_overtime_apply', as: :update_overtime_apply
+  get 'user/:id/attendances/:date/notice_overtime_apply', to: 'attendances#notice_overtime_apply', as: :notice_overtime_apply
+  patch 'confirmation_overtime_apply', to: 'attendances#confirmation_overtime_apply', as: :confirmation_overtime_apply
+  
   resources :users do
     resources :attendances, only: :create
   end

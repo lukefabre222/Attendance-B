@@ -1,0 +1,49 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="row">
+        <div class="col-md-12">
+          <%= form_with(model: @user, url: update_overtime_apply_path(date: params[:date]), local: true, method: :patch) do |f| %>
+            <h3 class="center">残業申請</h3>
+            <table class="table table-condensed table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="center">日付</th>
+                  <th class="center">曜日</th>
+                  <th class="center">終了予定時間</th>
+                  <th class="center">翌日</th>
+                  <th class="center">業務内容</th>
+                  <th class="center">指示者確認</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% attendances = Attendance.where(user_id: current_user.id).where(worked_on: params[:date]) %>
+                <% attendances.each do |day| %>
+                  <%= fields_for "attendances[]", day do |at| %>
+                    <tr>
+                      <td class="center"><%= day.worked_on.to_s(:date) %></td>
+                      <td class='center <%= "wday#{day.worked_on.wday}"%>'><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
+                      <td class="center"><%= at.time_select :overtime_end_time, {include_blank: true}, {class: "form-control"}%></td>
+                      <td class="center"><%= at.check_box :next_day_check %></td>
+                      <td class="center"><%= at.text_field :overtime_detail, placeholder: "入力必須", class:"form-control" %></td>
+                      <td class="center">
+                        <%= at.collection_select :overtime_superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
+                        <%= at.hidden_field :overtime_apply_status, value: "申請中" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+            <div class="center">
+              <%= f.submit "残業申請する", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

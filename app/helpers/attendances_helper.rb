@@ -40,13 +40,47 @@ module AttendancesHelper
     return attendances
   end
 
+  def checked_month_apply?
+    month_apply_check = true
+    confirmation_month_apply_params.each do |id, item|
+      if item[:month_apply_check] == "0"
+        month_apply_check = false
+      elsif item[:month_apply_check] == "1"
+        month_apply_check = true
+        break
+      end
+    end
+    month_apply_check
+  end
+
+  def checked_overtime_apply?
+    overtime_apply_check = true
+    confirmation_overtime_apply_params.each do |id, item|
+      if item[:overtime_check] == "0"
+        overtime_apply_check = false
+      elsif item[:overtime_check] == "1"
+        overtime_apply_check = true
+        break
+      end
+    end
+    overtime_apply_check
+  end
+
   #　１ヶ月勤怠申請が自分に来ているか
   def has_month_apply
     User.joins(:attendances).where(attendances: {superior_id: current_user.id}).where(attendances: {month_apply_status: "申請中"})
+  end
+  #  残業申請が自分に来ているか
+  def has_overtime_apply
+    User.joins(:attendances).where(attendances: {overtime_superior_id: current_user.id}).where(attendances: {overtime_apply_status: "申請中"})
   end
 
   # 1ヶ月承認待ちのユーザー
   def month_applying_users
     User.joins(:attendances).where.not(attendances:{superior_id: nil}).where(attendances: {month_apply_status: "申請中"})
+  end
+  # 残業承認まちのユーザー
+  def overtime_applying_users
+    User.joins(:attendances).where.not(attendances:{overtime_superior_id: nil}).where(attendances:{overtime_apply_status: "申請中"}).distinct
   end
 end

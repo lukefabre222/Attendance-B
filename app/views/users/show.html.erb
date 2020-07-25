@@ -30,7 +30,12 @@
           <%=  link_to "通知が#{has_month_apply.count}件あります。", notice_month_apply_path(@user,@dates), remote: true, class:"notice "%>
         <% end %>
       </p>
-      <p>【勤怠変更申請のお知らせ】</p>
+      <p>
+      【勤怠変更申請のお知らせ】
+        <% unless has_overtime_apply.count == 0 %>
+          <%= link_to "通知が#{has_overtime_apply.count}件あります。", notice_overtime_apply_path(@user,@dates), remote: :true, class:"notice" %>
+        <% end %>
+      </p>
       <p>【残業申請のお知らせ】</p>
     </div>
   <% end %>
@@ -74,7 +79,7 @@
     <tbody>
       <% @dates.each do |day| %>
         <tr>
-          <td><%= link_to "残業申請","#", class: "btn btn-primary" %></td>
+          <td><%= link_to "残業申請", overtime_apply_path(@user, day.worked_on), remote: true, class: "btn btn-primary" %></td>
           <td><%= day.worked_on.to_s(:date) %></td>
           <td class='<%= "wday#{day.worked_on.wday}"%>'>
             <%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %>
@@ -155,3 +160,5 @@
 
 <!-- モーダル -->
 <div id="notice_month_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
+<div id="overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
+<div id="notice_overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
