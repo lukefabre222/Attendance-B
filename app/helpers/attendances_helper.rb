@@ -40,6 +40,20 @@ module AttendancesHelper
     return attendances
   end
 
+  def change_attendances?
+    change_attendances = true
+    attendances_params.each do |id, item|
+      if item[change_superior_id].blank?
+        change_attendances = false
+        break
+      else
+        change_attendances = true
+        break
+      end
+    end
+    return change_attendances
+  end
+
   def checked_month_apply?
     month_apply_check = true
     confirmation_month_apply_params.each do |id, item|
