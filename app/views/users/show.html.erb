@@ -3,11 +3,15 @@
   <table class = "table-bordered table-condensed">
     <tr>
       <td>
-        <%= link_to "←", user_path(params: {id: @user.id, first_day: @first_day.prev_month }),
+        <% if current_user?(@user) %>
+          <%= link_to "←", user_path(params: {id: @user.id, first_day: @first_day.prev_month }),
+                            class: "btn btn-xs btn-primary" %>
+        <% end  %>
+          &emsp;<%= @first_day.to_s(:year_month) %>　時間管理表&emsp;
+        <% if current_user?(@user) %>
+          <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
                           class: "btn btn-xs btn-primary" %>
-        &emsp;<%= @first_day.to_s(:year_month) %>　時間管理表&emsp;
-        <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
-                          class: "btn btn-xs btn-primary" %>
+        <% end %>
       </td>
       <td>指定勤務時間　<%= format_basic_time(@user.work_time) %></td>
       <td colspan="3">基本時間　<%= format_basic_time(@user.basic_time) %></td>
@@ -50,7 +54,7 @@
       <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
     </div>
     <div>
-      <%= link_to "勤怠修正ログ(承認済)", "#", class: "btn btn-primary" %>
+      <%= link_to "勤怠修正ログ(承認済)", approved_attendance_path(@user, @first_day), remote: true, class: "btn btn-primary" %>
     </div>
   <table class = "table-bordered table-striped table-condensed">
     <thead>
@@ -85,7 +89,11 @@
     <tbody>
       <% @dates.each do |day| %>
         <tr>
-          <td><%= link_to "残業申請", overtime_apply_path(@user, day.worked_on), remote: true, class: "btn btn-primary" %></td>
+          <td>
+            <% if current_user?(@user) %>
+              <%= link_to "残業申請", overtime_apply_path(@user, day.worked_on), remote: true, class: "btn btn-primary" %>
+            <% end %>
+          </td>
           <td><%= day.worked_on.to_s(:date) %></td>
           <td class='<%= "wday#{day.worked_on.wday}"%>'>
             <%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %>
@@ -188,3 +196,4 @@
 <div id="overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
 <div id="notice_overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
 <div id="notice_change_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
+<div id="approved_attendance" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>

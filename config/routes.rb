@@ -20,7 +20,10 @@ Rails.application.routes.draw do
   patch 'user/:id/attendances/:date/update_overtime_apply', to: 'attendances#update_overtime_apply', as: :update_overtime_apply
   get 'user/:id/attendances/:date/notice_overtime_apply', to: 'attendances#notice_overtime_apply', as: :notice_overtime_apply
   patch 'confirmation_overtime_apply', to: 'attendances#confirmation_overtime_apply', as: :confirmation_overtime_apply
-  
+  #　勤怠修正ログ
+  get 'user/:id/attendances/:date/approved_attendance', to: 'attendances#approved_attendance', as: :approved_attendance
+
+
   resources :users do
     resources :attendances, only: :create
   end

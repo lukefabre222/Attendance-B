@@ -150,6 +150,10 @@ class AttendancesController < ApplicationController
     end
   end
 
+  def approved_attendance
+    @approved_attendances = Attendance.where(attendances:{change_status: "承認"}).where(attendances:{user_id: current_user.id})
+  end
+
   private
     # 1ヶ月更新時のstrong_params
     def attendances_params

@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="center">勤怠修正ログ</h3>
+            <table class="table table-condensed table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="center">日付</th>
+                  <th class="center">変更前出勤時間</th>
+                  <th class="center">変更前退勤時間</th>
+                  <th class="center">変更後出勤時間</th>
+                  <th class="center">変更後退勤時間</th>
+                  <th class="center">指示者</th>
+                  <th class="center">承認日</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @approved_attendances.each do |attendance|  %>
+                  <tr>
+                    <td class="center"><%= attendance.worked_on.to_s(:date) %></td>
+                    <td class="center"><%= attendance.started_at.strftime("%H:%M") %></td>
+                    <td class="center"><%= attendance.finished_at.strftime("%H:%M") %></td>
+                    <td class="center"><%= attendance.change_started_at.strftime("%H:%M") %></td>
+                    <td class="center"><%= attendance.change_finished_at.strftime("%H:%M") %></td>
+                    <td class="center"><%= User.find(attendance.user_id).name %></td>
+                    <td class="center"></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
