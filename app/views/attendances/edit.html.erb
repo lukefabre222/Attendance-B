@@ -32,7 +32,6 @@
               <td><%= af.text_field :note, class: "form-control" %></td>
               <td>
                 <%= af.collection_select :change_superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
-                <%= af.hidden_field :change_status, value: "申請中" %>
               </td>
             </tr>
           <% end %>

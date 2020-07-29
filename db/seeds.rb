@@ -3,15 +3,16 @@ User.create(name: "管理者",
             password: "password",
             password_confirmation: "password",
             admin: true)
+            
 4.times do |n|
   name = Faker::Japanese::Name.name
   email = "email#{n+1}@sample.com"
   password = "password"
   User.create!(name: name,
-               email: email,
-               password: password, 
-               password_confirmation: password,
-               superior: true)
+              email: email,
+              password: password,
+              password_confirmation: password,
+              superior: true)
 end
 
 
@@ -20,7 +21,7 @@ end
   email = "email#{n+5}@sample.com"
   password = "password"
   User.create!(name: name,
-               email: email,
-               password: password,
-               password_confirmation: password)
+              email: email,
+              password: password,
+              password_confirmation: password)
 end

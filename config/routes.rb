@@ -6,8 +6,11 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
   get '/edit-basic-info/:id', to: 'users#edit_basic_info', as: :basic_info
   patch 'update-basic-info',  to: 'users#update_basic_info'
+  #　勤怠変更関連ルーティング
   get 'users/:id/attendances/:date/edit', to: 'attendances#edit', as: :edit_attendances
   patch 'users/:id/attendances/:date/update', to: 'attendances#update', as: :update_attendances
+  get 'users/:id/attendances/:date/notice_change_apply', to: 'attendances#notice_change_apply', as: :notice_change_apply
+  patch 'confirmation_change_apply', to: 'attendances#confirmation_change_apply', as: :confirmation_change_apply
   #　１ヶ月申請関連ルーティング
   patch 'users/:id/attendances/:date/update_month_apply', to: 'attendances#update_month_apply', as: :update_month_apply
   get 'users/:id/attendances/:date/notice_month_apply', to: 'attendances#notice_month_apply', as: :notice_month_apply

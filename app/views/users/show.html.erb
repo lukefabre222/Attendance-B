@@ -1,13 +1,13 @@
 <% provide(:title, '勤怠表示') %>
-<div>
+<div class="row">
   <table class = "table-bordered table-condensed">
     <tr>
       <td>
         <%= link_to "←", user_path(params: {id: @user.id, first_day: @first_day.prev_month }),
-                         class: "btn btn-xs btn-primary" %>
+                          class: "btn btn-xs btn-primary" %>
         &emsp;<%= @first_day.to_s(:year_month) %>　時間管理表&emsp;
         <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
-                         class: "btn btn-xs btn-primary" %>
+                          class: "btn btn-xs btn-primary" %>
       </td>
       <td>指定勤務時間　<%= format_basic_time(@user.work_time) %></td>
       <td colspan="3">基本時間　<%= format_basic_time(@user.basic_time) %></td>
@@ -23,7 +23,7 @@
     </tr>
   </table>
   <% if current_user.superior && current_user?(@user) %>
-    <div class = "row">
+    <div>
       <p>
         【所属長承認申請のお知らせ】
         <% unless has_month_apply.count == 0 %>
@@ -31,21 +31,27 @@
         <% end %>
       </p>
       <p>
-      【勤怠変更申請のお知らせ】
+        【勤怠変更申請のお知らせ】
+        <% unless has_change_apply.count == 0 %>
+          <%= link_to "通知が#{has_change_apply.count}件あります。", notice_change_apply_path(@user, @dates), remote: true, class:"notice" %>
+        <% end %>
+      </p>
+      <p>
+        【残業申請のお知らせ】
+        
         <% unless has_overtime_apply.count == 0 %>
           <%= link_to "通知が#{has_overtime_apply.count}件あります。", notice_overtime_apply_path(@user,@dates), remote: :true, class:"notice" %>
         <% end %>
       </p>
-      <p>【残業申請のお知らせ】</p>
     </div>
   <% end %>
-  <div class = "row">
-    <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
-    <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
-  </div>
-  <div>
-    <%= link_to "勤怠修正ログ(承認済)", "#", class: "btn btn-primary" %>
-  </div>
+    <div>
+      <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
+      <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
+    </div>
+    <div>
+      <%= link_to "勤怠修正ログ(承認済)", "#", class: "btn btn-primary" %>
+    </div>
   <table class = "table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -108,15 +114,26 @@
           <td><%= day.note %></td>
           <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
           <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present? %></td>
-          <td>残業計算</td>
+          <td>
+            <% if day.overtime_end_time.present? %>
+              残業計算
+            <% end%>
+          </td>
           <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
           <td>
             <% if day.overtime_apply_status == "申請中"%>
-              <%= User.find(day.overtime_superior_id).name %>へ申請中
+              残業申請：<%= User.find(day.overtime_superior_id).name %>へ申請中
             <% elsif day.overtime_superior_id.present? %>
               <p class="<%= "danger-notice" if day.overtime_apply_status == "否認" %>">
-                <%= User.find(day.overtime_superior_id).name%>から<%= day.overtime_apply_status %>
-              </p> 
+                残業申請：<%= User.find(day.overtime_superior_id).name%>から<%= day.overtime_apply_status %>
+              </p>
+            <% end %>
+            <% if day.change_status == "申請中"%>
+              変更申請：<%= User.find(day.change_superior_id).name %>へ申請中
+            <% elsif day.change_superior_id.present? %>
+              <p class="<%= "danger-notice" if day.change_status == "否認" %>">
+                変更申請：<%= User.find(day.change_superior_id).name%>から<%= day.change_status %>
+              </p>
             <% end %>
           </td>
         </tr>
@@ -170,3 +187,4 @@
 <div id="notice_month_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
 <div id="overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
 <div id="notice_overtime_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>
+<div id="notice_change_apply" class="modal fade" tabindex="1000" role="dialog" aria-hidden="true"></div>

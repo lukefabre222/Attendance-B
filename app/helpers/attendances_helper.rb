@@ -43,9 +43,8 @@ module AttendancesHelper
   def change_attendances?
     change_attendances = true
     attendances_params.each do |id, item|
-      if item[change_superior_id].blank?
+      if item[:change_superior_id].blank?
         change_attendances = false
-        break
       else
         change_attendances = true
         break
@@ -80,6 +79,19 @@ module AttendancesHelper
     overtime_apply_check
   end
 
+  def checked_change_apply?
+    change_check = true
+    confirmation_change_apply_params.each do |id, item|
+      if item[:change_check] == "0"
+        change_check = false
+      elsif item[:change_chack] = "1"
+        change_check = true
+        break
+      end
+    end
+    change_check
+  end
+
   #　１ヶ月勤怠申請が自分に来ているか
   def has_month_apply
     User.joins(:attendances).where(attendances: {superior_id: current_user.id}).where(attendances: {month_apply_status: "申請中"})
@@ -87,6 +99,10 @@ module AttendancesHelper
   #  残業申請が自分に来ているか
   def has_overtime_apply
     User.joins(:attendances).where(attendances: {overtime_superior_id: current_user.id}).where(attendances: {overtime_apply_status: "申請中"})
+  end
+  # 変更申請が自分に来ているか
+  def has_change_apply
+    User.joins(:attendances).where(attendances: {change_superior_id: current_user.id}).where(attendances: {change_status: "申請中"})
   end
 
   # 1ヶ月承認待ちのユーザー
@@ -96,5 +112,9 @@ module AttendancesHelper
   # 残業承認まちのユーザー
   def overtime_applying_users
     User.joins(:attendances).where.not(attendances:{overtime_superior_id: nil}).where(attendances:{overtime_apply_status: "申請中"}).distinct
+  end
+  # 変更承認待ちのユーザー
+  def change_applying_users
+    User.joins(:attendances).where.not(attendances:{change_superior_id: nil}).where(attendances:{change_status: "申請中"}).distinct
   end
 end

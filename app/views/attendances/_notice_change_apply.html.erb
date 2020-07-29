@@ -1,0 +1,83 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="row">
+        <div class="col-md-12">
+          <%= form_with(model:@user, url: confirmation_change_apply_path, local:true, method: :patch) do |f| %>
+            <% @users.each do |user| %>
+              <h3 class="center">【<%= user.name%>】からの残業申請</h3>
+              <table class="table table-condensed table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th class="center" rowspan = "3">日付</th>
+                    <th class="center" rowspan = "3">曜日</th>
+                    <th class="center" colspan = "4">変更前</th>
+                    <th class="center" colspan = "4">変更後</th>
+                    <th class="center" rowspan = "3">備考</th>
+                    <th class="center" rowspan = "3">指示者確認</th>
+                    <th class="center" rowspan = "3">変更</th>
+                    <th class="center" rowspan = "3">勤怠を確認する</th>
+                  </tr>
+                  <tr>
+                  <td class="center" colspan = "2">出社</td>
+                  <td class="center" colspan = "2">退社</td>
+                  <td class="center" colspan = "2">出社</td>
+                  <td class="center" colspan = "2">退社</td>
+                  </tr>
+                  <tr>
+                    <td class="center">時</td>
+                    <td class="center">分</td>
+                    <td class="center">時</td>
+                    <td class="center">分</td>
+                    <td class="center">時</td>
+                    <td class="center">分</td>
+                    <td class="center">時</td>
+                    <td class="center">分</td>
+                    
+                  </tr>
+                </thead>
+                <% attendances = Attendance.where(user_id: user.id).where(change_status: "申請中") %>
+                <% attendances.each do |attendance| %>
+                  <% if attendance.change_status.present? && attendance.change_superior_id == current_user.id %>
+                    <%= fields_for "attendances[]", attendance do |at| %>
+                      <tbody>
+                        <tr>
+                          <td class="center"><%= attendance.worked_on.strftime("%m/%d") %></td>
+                          <td class='center <%= "wday#{attendance.worked_on.wday}"%>'><%= %w{日 月 火 水 木 金 土}[attendance.worked_on.wday] %></td>
+                          <td class="center"><%= attendance.started_at.to_s(:hour) if attendance.started_at.present? %></td>
+                          <td class="center"><%= attendance.started_at.to_s(:min) if attendance.started_at.present? %></td>
+                          <td class="center"><%= attendance.finished_at.to_s(:hour) if attendance.finished_at.present? %></td>
+                          <td class="center"><%= attendance.finished_at.to_s(:min) if attendance.finished_at.present? %></td>
+                          <td class="center"><%= attendance.change_started_at.to_s(:hour) if attendance.change_started_at.present? %></td>
+                          <td class="center"><%= attendance.change_started_at.to_s(:min) if attendance.change_started_at.present? %></td>
+                          <td class="center"><%= attendance.change_finished_at.to_s(:hour) if attendance.change_finished_at.present? %></td>
+                          <td class="center"><%= attendance.change_finished_at.to_s(:min) if attendance.change_finished_at.present? %></td>
+                          <td class="center"><%= attendance.note %></td>
+                          <td class="center">
+                            <%= at.select :change_status, ["なし", "申請中", "承認", "否認"], {}, class: "form-control" %>
+                          </td>
+                          <td class="center">
+                            <%= at.check_box :change_check %>
+                            <%= at.hidden_field :change_started_at, value: attendance.change_started_at %>
+                            <%= at.hidden_field :change_finished_at, value: attendance.change_finished_at %>
+                          </td>
+                          <td class="center"><%= link_to "確認", user_path(id: user.id, date: params[:date]), class: "btn btn-primary" %></td>
+                        </tr>
+                      </tbody>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </table>
+            <% end %>
+              <div class="center">
+                <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
