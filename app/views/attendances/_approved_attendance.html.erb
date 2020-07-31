@@ -27,7 +27,7 @@
                     <td class="center"><%= attendance.finished_at.strftime("%H:%M") %></td>
                     <td class="center"><%= attendance.change_started_at.strftime("%H:%M") %></td>
                     <td class="center"><%= attendance.change_finished_at.strftime("%H:%M") %></td>
-                    <td class="center"><%= User.find(attendance.user_id).name %></td>
+                    <td class="center"><%= User.find(attendance.change_superior_id).name %></td>
                     <td class="center"></td>
                   </tr>
                 <% end %>

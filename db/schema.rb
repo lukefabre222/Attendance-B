@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_133645) do
+ActiveRecord::Schema.define(version: 2020_07_29_141009) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_133645) do
     t.datetime "change_started_at"
     t.datetime "change_finished_at"
     t.integer "change_next_day_check"
+    t.datetime "approved_date"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

@@ -98,6 +98,30 @@
           <td class='<%= "wday#{day.worked_on.wday}"%>'>
             <%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %>
           </td>
+
+        <% if day.change_status == "承認" %>
+          <td><%= day.change_started_at.to_s(:hour) if day.change_started_at.present? %></td>
+          <td><%= day.change_started_at.floor_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
+          <td>
+            <% if day.worked_on == Date.today && day.started_at.nil? %>
+              <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+            <% end %>
+          </td>
+          <td><%= day.change_finished_at.to_s(:hour) if day.change_finished_at.present? %></td>
+          <td><%= day.change_finished_at.floor_to(15.minutes).to_s(:min) if day.change_finished_at.present? %></td>
+          <td>
+            <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
+              <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+            <% end %>
+          </td>
+          <td>
+            <% if day.change_started_at.present? && day.change_finished_at.present? %>
+              <%= working_times(day.change_started_at, day.change_finished_at) %>
+              <% seconds = (day.change_finished_at - day.change_started_at).to_i %>
+              <% @total_seconds = @total_seconds.to_i + seconds %>
+            <% end %>
+          </td>
+        <% else %>
           <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
           <td><%= day.started_at.floor_to(15.minutes).to_s(:min) if day.started_at.present? %></td>
           <td>
@@ -119,6 +143,7 @@
               <% @total_seconds = @total_seconds.to_i + seconds %>
             <% end %>
           </td>
+        <% end %>
           <td><%= day.note %></td>
           <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
           <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present? %></td>
@@ -137,7 +162,7 @@
               </p>
             <% end %>
             <% if day.change_status == "申請中"%>
-              変更申請：<%= User.find(day.change_superior_id).name %>へ申請中
+              変更申請：<%= User.find(day.change_superior_id).name%>へ申請中
             <% elsif day.change_superior_id.present? %>
               <p class="<%= "danger-notice" if day.change_status == "否認" %>">
                 変更申請：<%= User.find(day.change_superior_id).name%>から<%= day.change_status %>
