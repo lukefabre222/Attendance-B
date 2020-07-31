@@ -35,7 +35,8 @@ class AttendancesController < ApplicationController
                                         change_finished_at: item[:finished_at])
         else
           attendance.update_attributes!(note: item[:note],
-                                        change_next_day_check: item[:change_next_day_check])
+                                        change_next_day_check: item[:change_next_day_check],
+                                        started_at: item[:started_at],finished_at: item[:finished_at])
         end
       end
         flash[:success] = "勤怠変更を申請しました。"

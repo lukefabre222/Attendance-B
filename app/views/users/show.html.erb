@@ -1,6 +1,6 @@
 <% provide(:title, '勤怠表示') %>
 <div class="row">
-  <table class = "table-bordered table-condensed">
+  <table class = "table-bordered table-condensed mb-5">
     <tr>
       <td>
         <% if current_user?(@user) %>
@@ -27,7 +27,7 @@
     </tr>
   </table>
   <% if current_user.superior && current_user?(@user) %>
-    <div>
+    <div class="mb-5">
       <p>
         【所属長承認申請のお知らせ】
         <% unless has_month_apply.count == 0 %>
@@ -49,14 +49,16 @@
       </p>
     </div>
   <% end %>
-    <div>
-      <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
-      <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
-    </div>
-    <div>
-      <%= link_to "勤怠修正ログ(承認済)", approved_attendance_path(@user, @first_day), remote: true, class: "btn btn-primary" %>
-    </div>
-  <table class = "table-bordered table-striped table-condensed">
+    <% if current_user?(@user) %>
+      <div class="mb-5">
+        <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
+        <%= link_to "CSV出力", "#", class: "btn btn-primary" %>
+      </div>
+      <div class="mb-5">
+        <%= link_to "勤怠修正ログ(承認済)", approved_attendance_path(@user, @first_day), remote: true, class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <table class = "table-bordered table-striped table-condensed mb-5">
     <thead>
       <tr>
         <th rowspan = "3">残業申請</th>
