@@ -7,6 +7,17 @@
       <div class="row">
         <div class="col-md-12">
           <h3 class="center">勤怠修正ログ</h3>
+          <%= search_form_for( @q, url:approved_attendance_path, method: :get, remote: true,  html: {class:"form-horizontal"}) do |f| %>
+            <div class="form-group row text-center">
+              <%= f.label :worked_on, "勤務日", class: "col-sm-2 control-label" %>
+              <div class="col-sm-8">
+                <%= f.date_select :worked_on, discard_day: true, class:"form-control", placeholder: "勤務日で検索" %>
+              </div>
+              <div class="col-sm-2">
+                <%= f.submit class:"btn btn-outline-primary" %>
+              </div>
+            </div>
+          <% end %>
             <table class="table table-condensed table-bordered table-hover">
               <thead>
                 <tr>
@@ -28,7 +39,7 @@
                     <td class="center"><%= attendance.change_started_at.strftime("%H:%M") %></td>
                     <td class="center"><%= attendance.change_finished_at.strftime("%H:%M") %></td>
                     <td class="center"><%= User.find(attendance.change_superior_id).name %></td>
-                    <td class="center"></td>
+                    <td class="center"><%= attendance.approved_date.strftime("%-m/%d") if attendance.approved_date.present? %></td>
                   </tr>
                 <% end %>
               </tbody>

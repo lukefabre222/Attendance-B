@@ -137,7 +137,13 @@ class AttendancesController < ApplicationController
   end
 
   def approved_attendance
-    @approved_attendances = Attendance.where(attendances:{change_status: "承認"}).where(attendances:{user_id: current_user.id})
+    @q = Attendance.ransack(params[:q])
+    if params[:q].present?
+      search_date = "#{params[:q]["worked_on(1i)"]}-#{params[:q]["worked_on(2i)"]}-1"
+      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where(worked_on: search_date.in_time_zone.all_month).where(attendances:{change_status: "承認"})
+    else
+      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where(attendances:{change_status: "承認"})
+    end
   end
 
   private
@@ -165,6 +171,6 @@ class AttendancesController < ApplicationController
     end
 
     def confirmation_change_apply_params
-      params.permit(attendances: [:change_started_at, :change_finished_at, :change_status, :change_check])[:attendances]
+      params.permit(attendances: [:change_started_at, :change_finished_at, :change_status, :change_check, :approved_date])[:attendances]
     end
 end
