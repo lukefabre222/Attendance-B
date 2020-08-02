@@ -12,8 +12,15 @@ module AttendancesHelper
   def working_times(started_at, finished_at)
     format("%.2f", (((finished_at - started_at) / 60) / 60.0))
   end
+  
   def working_times_sum(seconds)
     format("%.2f", seconds/60/60.0)
+  end
+
+  def over_work_times(overtime_end_time, designated_work_end_time)
+    finish_time = overtime_end_time.hour + overtime_end_time.min/60.0
+    default_time = designated_work_end_time.hour + designated_work_end_time.min/60.0
+    format("%.2f", (finish_time-default_time))
   end
 
   def first_day(date)

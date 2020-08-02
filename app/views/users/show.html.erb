@@ -13,7 +13,10 @@
                           class: "btn btn-xs btn-primary" %>
         <% end %>
       </td>
-      <td>指定勤務時間　<%= format_basic_time(@user.work_time) %></td>
+      <td>
+        指定勤務開始時間　<%= format_basic_time(@user.designated_work_start_time) %><br>
+        指定勤務終了時間　<%= format_basic_time(@user.designated_work_end_time) %>
+      </td>
       <td colspan="3">基本時間　<%= format_basic_time(@user.basic_time) %></td>
       <td>初日　<%= @first_day.to_s(:date) %></td>
     </tr>
@@ -101,59 +104,59 @@
             <%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %>
           </td>
 
-        <% if day.change_status == "承認" %>
-          <td><%= day.change_started_at.to_s(:hour) if day.change_started_at.present? %></td>
-          <td><%= day.change_started_at.floor_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
-          <td>
-            <% if day.worked_on == Date.today && day.started_at.nil? %>
-              <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
-            <% end %>
-          </td>
-          <td><%= day.change_finished_at.to_s(:hour) if day.change_finished_at.present? %></td>
-          <td><%= day.change_finished_at.floor_to(15.minutes).to_s(:min) if day.change_finished_at.present? %></td>
-          <td>
-            <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
-              <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
-            <% end %>
-          </td>
-          <td>
-            <% if day.change_started_at.present? && day.change_finished_at.present? %>
-              <%= working_times(day.change_started_at, day.change_finished_at) %>
-              <% seconds = (day.change_finished_at - day.change_started_at).to_i %>
-              <% @total_seconds = @total_seconds.to_i + seconds %>
-            <% end %>
-          </td>
-        <% else %>
-          <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
-          <td><%= day.started_at.floor_to(15.minutes).to_s(:min) if day.started_at.present? %></td>
-          <td>
-            <% if day.worked_on == Date.today && day.started_at.nil? %>
-              <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
-            <% end %>
-          </td>
-          <td><%= day.finished_at.to_s(:hour) if day.finished_at.present? %></td>
-          <td><%= day.finished_at.floor_to(15.minutes).to_s(:min) if day.finished_at.present? %></td>
-          <td>
-            <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
-              <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
-            <% end %>
-          </td>
-          <td>
-            <% if day.started_at.present? && day.finished_at.present? %>
-              <%= working_times(day.started_at, day.finished_at) %>
-              <% seconds = (day.finished_at - day.started_at).to_i %>
-              <% @total_seconds = @total_seconds.to_i + seconds %>
-            <% end %>
-          </td>
-        <% end %>
+          <% if day.change_status == "承認" %>
+            <td><%= day.change_started_at.to_s(:hour) if day.change_started_at.present? %></td>
+            <td><%= day.change_started_at.floor_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
+            <td>
+              <% if day.worked_on == Date.today && day.started_at.nil? %>
+                <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+              <% end %>
+            </td>
+            <td><%= day.change_finished_at.to_s(:hour) if day.change_finished_at.present? %></td>
+            <td><%= day.change_finished_at.floor_to(15.minutes).to_s(:min) if day.change_finished_at.present? %></td>
+            <td>
+              <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
+                <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+              <% end %>
+            </td>
+            <td>
+              <% if day.change_started_at.present? && day.change_finished_at.present? %>
+                <%= working_times(day.change_started_at, day.change_finished_at) %>
+                <% seconds = (day.change_finished_at - day.change_started_at).to_i %>
+                <% @total_seconds = @total_seconds.to_i + seconds %>
+              <% end %>
+            </td>
+          <% else %>
+            <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
+            <td><%= day.started_at.floor_to(15.minutes).to_s(:min) if day.started_at.present? %></td>
+            <td>
+              <% if day.worked_on == Date.today && day.started_at.nil? %>
+                <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+              <% end %>
+            </td>
+            <td><%= day.finished_at.to_s(:hour) if day.finished_at.present? %></td>
+            <td><%= day.finished_at.floor_to(15.minutes).to_s(:min) if day.finished_at.present? %></td>
+            <td>
+              <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
+                <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+              <% end %>
+            </td>
+            <td>
+              <% if day.started_at.present? && day.finished_at.present? %>
+                <%= working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <% seconds = (day.finished_at - day.started_at).to_i %>
+                <% @total_seconds = @total_seconds.to_i + seconds %>
+              <% end %>
+            </td>
+          <% end %>
           <td><%= day.note %></td>
           <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
           <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present? %></td>
-          <td>
-            <% if day.overtime_end_time.present? %>
-              残業計算
-            <% end%>
-          </td>
+          <% if day.overtime_end_time.present? && User.find(day.user_id).designated_work_end_time.present? %>
+            <td><%= over_work_times(day.overtime_end_time.floor_to(15.minutes), User.find(day.user_id).designated_work_end_time.floor_to(15.minutes)) %></td>
+          <% else %>
+            <td></td>
+          <% end %>
           <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
           <td>
             <% if day.overtime_apply_status == "申請中"%>

@@ -31,9 +31,9 @@
                         <tr>
                           <td class="center"><%= attendance.worked_on.strftime("%m/%d") %></td>
                           <td class='center <%= "wday#{attendance.worked_on.wday}"%>'><%= %w{日 月 火 水 木 金 土}[attendance.worked_on.wday] %></td>
-                          <td class="center"><%= attendance.overtime_end_time.strftime("%H:%M")%></td>
-                          <td class="center"></td>
-                          <td class="center"></td>
+                          <td class="center"><%= attendance.overtime_end_time.floor_to(15.minutes).strftime("%H:%M")%></td>
+                          <td class="center"><%= user.designated_work_end_time.strftime("%H:%M") %></td>
+                          <td class="center"><%= over_work_times(attendance.overtime_end_time.floor_to(15.minutes), User.find(attendance.user_id).designated_work_end_time.floor_to(15.minutes)) %></td>
                           <td class="center"><%= attendance.overtime_detail %></td>
                           <td class="center">
                             <%= at.select :overtime_apply_status, ["なし", "申請中", "承認", "否認"], {}, class: "form-control" %>
