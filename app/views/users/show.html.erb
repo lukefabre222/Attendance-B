@@ -29,29 +29,61 @@
       <td>締日　<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
-  <% if current_user.superior && current_user?(@user) %>
-    <div class="mb-5">
-      <p>
-        【所属長承認申請のお知らせ】
-        <% unless has_month_apply.count == 0 %>
-          <%=  link_to "通知が#{has_month_apply.count}件あります。", notice_month_apply_path(@user,@dates), remote: true, class:"notice "%>
-        <% end %>
-      </p>
-      <p>
-        【勤怠変更申請のお知らせ】
-        <% unless has_change_apply.count == 0 %>
-          <%= link_to "通知が#{has_change_apply.count}件あります。", notice_change_apply_path(@user, @dates), remote: true, class:"notice" %>
-        <% end %>
-      </p>
-      <p>
-        【残業申請のお知らせ】
-        
-        <% unless has_overtime_apply.count == 0 %>
-          <%= link_to "通知が#{has_overtime_apply.count}件あります。", notice_overtime_apply_path(@user,@dates), remote: :true, class:"notice" %>
-        <% end %>
-      </p>
+
+    <div class="row">
+      <% if current_user.superior && current_user?(@user) %>
+        <div class="mb-5 col-md-6">
+          <h3 class="center">＜スタッフからの申請状況＞</h3>
+          <p>
+            【所属長承認申請のお知らせ】
+            <% unless has_month_apply.count == 0 %>
+              <%=  link_to "通知が#{has_month_apply.count}件あります。", notice_month_apply_path(@user,@dates), remote: true, class:"notice "%>
+            <% end %>
+          </p>
+          <p>
+            【勤怠変更申請のお知らせ】
+            <% unless has_change_apply.count == 0 %>
+              <%= link_to "通知が#{has_change_apply.count}件あります。", notice_change_apply_path(@user, @dates), remote: true, class:"notice" %>
+            <% end %>
+          </p>
+          <p>
+            【残業申請のお知らせ】
+            
+            <% unless has_overtime_apply.count == 0 %>
+              <%= link_to "通知が#{has_overtime_apply.count}件あります。", notice_overtime_apply_path(@user,@dates), remote: :true, class:"notice" %>
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+      <div class="col-md-6">
+        <h3 class="center">自身の申請状況</h3>
+        <div>
+          <p>
+            【１ヶ月申請の申請状況】
+            <span class="<%= "notice" if has_did_not_month_approved.present? %>">
+              <%= "申請中/否認が#{has_did_not_month_approved.count}件あります" if has_did_not_month_approved.present? %>
+            </span>
+          </p>
+        </div>
+        <div>
+          <p>
+          【勤怠変更申請の申請状況】
+            <span class="<%= "notice" if has_did_not_change_approved.present? %>">
+              <%= "申請中/否認が#{has_did_not_change_approved.count}件有ります" if has_did_not_change_approved.present? %>
+            </span>
+          </p>
+        </div>
+        <div>
+          <p>
+            【残業申請の申請状況】
+            <span class="<%= "notice" if has_did_not_overtime_approved.present? %>">
+              <%= "申請中/否認が#{has_did_not_overtime_approved.count}件あります" if has_did_not_overtime_approved.present? %>
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
-  <% end %>
+
     <% if current_user?(@user) %>
       <div class="mb-5">
         <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
@@ -105,8 +137,8 @@
           </td>
 
           <% if day.change_status == "承認" %>
-            <td><%= day.change_started_at.to_s(:hour) if day.change_started_at.present? %></td>
-            <td><%= day.change_started_at.floor_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
+            <td><%= day.change_started_at.ceil_to(15.minutes).to_s(:hour) if day.change_started_at.present? %></td>
+            <td><%= day.change_started_at.ceil_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
             <td>
               <% if day.worked_on == Date.today && day.started_at.nil? %>
                 <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
@@ -121,14 +153,14 @@
             </td>
             <td>
               <% if day.change_started_at.present? && day.change_finished_at.present? %>
-                <%= working_times(day.change_started_at, day.change_finished_at) %>
+                <%= working_times(day.change_started_at.ceil_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
                 <% seconds = (day.change_finished_at - day.change_started_at).to_i %>
                 <% @total_seconds = @total_seconds.to_i + seconds %>
               <% end %>
             </td>
           <% else %>
-            <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
-            <td><%= day.started_at.floor_to(15.minutes).to_s(:min) if day.started_at.present? %></td>
+            <td><%= day.started_at.ceil_to(15.minutes).to_s(:hour) if day.started_at.present? %></td>
+            <td><%= day.started_at.ceil_to(15.minutes).to_s(:min) if day.started_at.present? %></td>
             <td>
               <% if day.worked_on == Date.today && day.started_at.nil? %>
                 <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
@@ -143,7 +175,7 @@
             </td>
             <td>
               <% if day.started_at.present? && day.finished_at.present? %>
-                <%= working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <%= working_times(day.started_at.ceil_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
                 <% seconds = (day.finished_at - day.started_at).to_i %>
                 <% @total_seconds = @total_seconds.to_i + seconds %>
               <% end %>

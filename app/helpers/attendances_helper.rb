@@ -111,6 +111,19 @@ module AttendancesHelper
   def has_change_apply
     User.joins(:attendances).where(attendances: {change_superior_id: current_user.id}).where(attendances: {change_status: "申請中"})
   end
+  # 未承認または否認の１ヶ月申請があるか
+  def has_did_not_month_approved
+    Attendance.where(user_id: current_user.id).where(month_apply_status: "申請中").or(Attendance.where(month_apply_status: "否認"))
+  end
+  # 未承認または否認の残業申請があるか
+  def has_did_not_overtime_approved
+    Attendance.where(user_id: current_user.id).where(overtime_apply_status: "申請中").or(Attendance.where(overtime_apply_status: "否認"))
+  end
+  # 未承認または否認の勤怠変更申請があるか
+  def has_did_not_change_approved
+    Attendance.where(user_id: current_user.id).where(change_status: "申請中").or(Attendance.where(change_status: "否認"))
+  end
+
 
   # 1ヶ月承認待ちのユーザー
   def month_applying_users
