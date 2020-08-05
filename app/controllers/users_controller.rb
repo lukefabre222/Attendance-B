@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:edit, :update]
-  before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
+  before_action :correct_user, only: [:edit]
+  before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
 
   def index
     @q = User.ransack(params[:q])
-    @users = @q.result(distinct: true).paginate(page: params[:page])
+    @users = @q.result(distinct: true).where.not(users:{id:1}).paginate(page: params[:page]).order(id:"asc")
   end
 
 
@@ -41,14 +41,26 @@ class UsersController < ApplicationController
   end
 
   def edit
+
   end
 
   def update
-    if @user.update_attributes(user_params)
-      flash[:success] = "ユーザー情報を更新しました"
-      redirect_to @user
+    if current_user.admin?
+      @user = User.find(params[:id])
+      if @user.update_attributes(user_params)
+        flash[:success] = "ユーザー情報を更新しました"
+        redirect_to users_path
+      else
+        render 'edit'
+      end
     else
-      render 'edit'
+      correct_user
+      if @user.update_attributes(user_params)
+        flash[:success] = "ユーザー情報を更新しました"
+        redirect_to user_path
+      else
+        render 'edit'
+      end
     end
   end
 
@@ -75,7 +87,9 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :department, :password_confirmation)
+      params.require(:user).permit(:name, :email, :password, :department, :password_confirmation,
+                                    :basic_time, :employee_number, :uid,
+                                    :designated_start_time, :designated_end_time)
     end
 
     def basic_info_params
