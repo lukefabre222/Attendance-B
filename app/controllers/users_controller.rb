@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: [:edit, :update]
   before_action :correct_user, only: [:edit]
   before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :reguler_user, only: [:show]
 
   def index
     @q = User.ransack(params[:q])
@@ -22,6 +23,11 @@ class UsersController < ApplicationController
     @dates = user_attendances_month_date
     @worked_sum = @dates.where.not(started_at: nil).count
     @superiors = User.where(superior: true).where.not(id: current_user.id)
+
+    respond_to do |format|
+      format.html
+      format.csv{ send_data @dates.generate_csv, filename: "attendances-#{Time.zone.now.strftime("%Y%m%d%S")}.csv"}
+    end
   end
 
 
@@ -84,6 +90,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def attended
+    @users = User.joins(:attendances).where(attendances:{worked_on: Date.today}).where.not(attendances: {started_at: nil}).where(attendances:{finished_at: nil})
+  end
+
   private
 
     def user_params
@@ -111,6 +121,10 @@ class UsersController < ApplicationController
 
     def admin_user
       redirect_to(root_url) unless current_user.admin?
+    end
+
+    def reguler_user
+      redirect_to(root_url) if current_user.admin?
     end
 
 end

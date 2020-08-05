@@ -1,6 +1,8 @@
 class AttendancesController < ApplicationController
+  before_action :reguler_user, only:[:create, :edit, :update, :update_month_apply, :update_overtime_apply]
+
   def create
-    @user = User.find(params[:id])
+    @user = User.find(params[:user_id])
     @attendance = @user.attendances.find_by(worked_on: Date.today)
     if @attendance.started_at.nil?
       @attendance.update_attributes(started_at: current_time)
@@ -172,5 +174,9 @@ class AttendancesController < ApplicationController
 
     def confirmation_change_apply_params
       params.permit(attendances: [:change_started_at, :change_finished_at, :change_status, :change_check, :approved_date])[:attendances]
+    end
+
+    def reguler_user
+      redirect_to root_path if current_user.admin?
     end
 end

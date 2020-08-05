@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   post   '/login',  to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
   get '/edit-basic-info/:id', to: 'users#edit_basic_info', as: :basic_info
+  get 'users/attended', to: 'users#attended', as: :attended_path
   patch 'update-basic-info',  to: 'users#update_basic_info'
   #　勤怠変更関連ルーティング
   get 'users/:id/attendances/:date/edit', to: 'attendances#edit', as: :edit_attendances
