@@ -34,10 +34,10 @@
                 <% @approved_attendances.each do |attendance|  %>
                   <tr>
                     <td class="center"><%= attendance.worked_on.to_s(:date) %></td>
-                    <td class="center"><%= attendance.started_at.strftime("%H:%M") %></td>
-                    <td class="center"><%= attendance.finished_at.strftime("%H:%M") %></td>
-                    <td class="center"><%= attendance.change_started_at.strftime("%H:%M") %></td>
-                    <td class="center"><%= attendance.change_finished_at.strftime("%H:%M") %></td>
+                    <td class="center"><%= attendance.started_at.strftime("%H:%M") if attendance.started_at.present? %></td>
+                    <td class="center"><%= attendance.finished_at.strftime("%H:%M") if attendance.finished_at.present? %></td>
+                    <td class="center"><%= attendance.change_started_at.strftime("%H:%M") if attendance.change_started_at.present? %></td>
+                    <td class="center"><%= attendance.change_finished_at.strftime("%H:%M") if attendance.change_finished_at.present? %></td>
                     <td class="center"><%= User.find(attendance.change_superior_id).name %></td>
                     <td class="center"><%= attendance.approved_date.strftime("%-m/%d") if attendance.approved_date.present? %></td>
                   </tr>
