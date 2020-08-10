@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2020_08_10_072406) do
     t.string "attendance_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["office_number"], name: "index_offices_on_office_number", unique: true
   end
 
   create_table "users", force: :cascade do |t|
