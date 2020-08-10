@@ -29,6 +29,10 @@ ja:
         uid: カードID
         designated_work_start_time: 指定勤務開始時間
         designated_work_end_time: 指定勤務終了時間
+      office:
+        office_name: 拠点名
+        office_number: 拠点番号
+        attendance_status: 勤怠種類
     errors:
       messages:
         record_invalid: 'バリデーションに失敗しました: %{errors}'

@@ -9,6 +9,11 @@ class UsersController < ApplicationController
     @users = @q.result(distinct: true).where.not(users:{id:1}).paginate(page: params[:page]).order(id:"asc")
   end
 
+  def import
+    User.import(params[:file])
+    redirect_to users_path
+  end
+
 
   def show
     @user = User.find(params[:id])

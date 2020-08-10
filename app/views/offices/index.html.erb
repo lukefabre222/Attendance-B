@@ -1,0 +1,27 @@
+<% provide(:title, '拠点一覧') %>
+<h1 class="center"> 拠点一覧 </h1>
+<table class="table-bordered table-striped table-condensed mb-5" >
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>拠点番号</th>
+      <th>拠点名</th>
+      <th>勤怠種類</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @offices.each do |office| %>
+      <tr>
+      <th><%= link_to "編集", edit_office_path(office), class: "btn btn-primary" %></th>
+      <th><%= link_to "削除", office_path(office), method: :delete,
+                          data: { confirm: "削除してよろしいですか？"},class: "btn btn-primary" %></th>
+        <th><%= office.office_number %></th>
+        <th><%= office.office_name %></th>
+        <th><%= office.attendance_status %></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "拠点追加", new_office_path, class: "btn btn-primary" %>

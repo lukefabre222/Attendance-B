@@ -1,0 +1,16 @@
+  <div>  
+    <%= form_for(@office) do |f| %>
+      <%= render 'shared/error_messages_office', object: @office %>
+
+      <%= f.label :office_name%>
+      <%= f.text_field :office_name, class: "form-control" %>
+
+      <%= f.label :office_number%>
+      <%= f.number_field :office_number, class: "form-control" %>
+      
+      <%= f.label :attendance_status %>
+      <%= f.select :attendance_status,[["出勤", "出勤"],["退勤", "退勤"]], {}, {class: "form-control"} %>
+
+      <%= f.submit yield(:button_text), class: "btn btn-primary"%>
+    <% end %>
+  </div>

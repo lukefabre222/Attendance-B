@@ -10,4 +10,17 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: {minimum:6}, allow_nil: true
   validates :department, length: {in:3..50}, allow_blank: true
+
+  def self.import(file)
+    CSV.foreach(file.path, encoding: "Shift_JIS:UTF-8", headers: true) do |row|
+      user = new
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      user.save!
+    end
+  end
+
+  def self.updatable_attributes
+    [ "name", "email", "department", "employee_number", "uid", "basic_time", "designated_worke_start_time",
+      "designated_work_end_time", "superior", "admin", "password"]
+  end
 end
