@@ -55,33 +55,6 @@
           </p>
         </div>
       <% end %>
-      <div class="col-md-6">
-        <h3 class="center">自身の申請状況</h3>
-        <div>
-          <p>
-            【１ヶ月申請の申請状況】
-            <span class="<%= "notice" if has_did_not_month_approved.present? %>">
-              <%= "申請中/否認が#{has_did_not_month_approved.count}件あります" if has_did_not_month_approved.present? %>
-            </span>
-          </p>
-        </div>
-        <div>
-          <p>
-          【勤怠変更申請の申請状況】
-            <span class="<%= "notice" if has_did_not_change_approved.present? %>">
-              <%= "申請中/否認が#{has_did_not_change_approved.count}件有ります" if has_did_not_change_approved.present? %>
-            </span>
-          </p>
-        </div>
-        <div>
-          <p>
-            【残業申請の申請状況】
-            <span class="<%= "notice" if has_did_not_overtime_approved.present? %>">
-              <%= "申請中/否認が#{has_did_not_overtime_approved.count}件あります" if has_did_not_overtime_approved.present? %>
-            </span>
-          </p>
-        </div>
-      </div>
     </div>
 
     <% if current_user?(@user) %>
