@@ -175,7 +175,7 @@
               変更申請：<%= User.find(day.change_superior_id).name%>へ申請中
             <% elsif day.change_superior_id.present? %>
               <p class="<%= "danger-notice" if day.change_status == "否認" %>">
-                変更申請：<%= User.find(day.change_superior_id).name%>から<%= day.change_status %>
+                変更申請：<%= User.find(day.change_superior_id).name%>から<%= day.change_status %>  
               </p>
             <% end %>
           </td>

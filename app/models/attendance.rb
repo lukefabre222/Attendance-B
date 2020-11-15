@@ -7,22 +7,43 @@ class Attendance < ApplicationRecord
   def self.csv_headers
     [
       "出勤日",
-      "勤務開始時間",
-      "勤務終了時間",
-      "変更後勤務開始時間",
-      "変更後勤務終了時間"
+      "出社",
+      "退社"
     ]
+  end
+  
+  def started_at_csv
+    unless change_status == "申請中"
+      if change_status == "承認"
+        change_started_at.strftime("%H:%M")
+      else
+        started_at.strftime("%H:%M") if started_at.present?
+      end
+    else
+      started_at = nil
+      return started_at
+    end
+  end
+
+  def finished_at_csv
+    unless change_status == "申請中"
+      if change_status == "承認"
+        change_finished_at.strftime("%H:%M")
+      else
+        finished_at.strftime("%H:%M") if finished_at.present?
+      end
+    else
+      finished_at = nil
+      return finished_at
+    end
   end
 
   def csv_column_values
     [
-      worked_on,
-      started_at, 
-      finished_at, 
-      change_started_at, 
-      change_finished_at
+      worked_on.strftime("%m/%d"),
+      started_at_csv,
+      finished_at_csv
     ]
-    
   end
 
   def self.generate_csv

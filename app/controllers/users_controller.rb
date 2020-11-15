@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:edit, :update]
   before_action :correct_user, only: [:edit]
-  before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info, :attended]
   before_action :reguler_user, only: [:show]
 
   def index
@@ -122,10 +122,12 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user)
+      flash[:danger] = "権限がないため、TOPへ戻りました"
     end
 
     def admin_user
       redirect_to(root_url) unless current_user.admin?
+      flash[:danger] = "管理者権限でログインしてください"
     end
 
     def reguler_user
