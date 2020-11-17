@@ -12,7 +12,7 @@
           <th>翌日</th>
           <th>在社時間</th>
           <th>備考</th>
-          <th>指示者確認&#x329e;</th>
+          <th>指示者確認&#x329e;</th> 
         </tr>
       </thead>
       <tbody>
@@ -21,14 +21,30 @@
             <tr>
               <td><%= day.worked_on.to_s(:date) %></td>
               <td><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
-              <td><%= af.time_field :started_at, class: "form-control" %></td>
-              <td><%= af.time_field :finished_at, class: "form-control" %></td>
-              <td><%= af.check_box :change_next_day_check %></td>
+              <% if day.change_started_at.present? %>
+                <td><%= af.time_field :change_started_at, class: "form-control" %></td>
+                <td><%= af.time_field :change_finished_at, class: "form-control" %></td>
+                <td><%= af.check_box :change_next_day_check %></td>
               <td>
-                <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at.ceil_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <% if day.change_started_at.present? && day.change_finished_at.present? %>
+                  <% if day.change_finished_at - day.change_started_at < 15 %>
+                    0
+                  <% else %>
+                    <%= working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+                  <% end %>
                 <% end %>
               </td>
+              <% else %>
+                <td><%= af.time_field :started_at, class: "form-control" %></td>
+                <td><%= af.time_field :finished_at, class: "form-control" %></td>
+                <td><%= af.check_box :change_next_day_check %></td>
+              <td>
+                <% if day.started_at.present? && day.finished_at.present? %>
+                  <%= working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <% end %>
+              </td>
+              <% end %>
+              
               <td><%= af.text_field :note, class: "form-control" %></td>
               <td>
                 <%= af.collection_select :change_superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>

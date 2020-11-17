@@ -31,7 +31,7 @@
                 </tr>
               </thead>
               <tbody>
-                <% @approved_attendances.each do |attendance|  %>
+                <% @approved_attendances.each do |attendance|  %> 
                   <tr>
                     <td class="center"><%= attendance.worked_on.to_s(:date) %></td>
                     <td class="center"><%= attendance.started_at.strftime("%H:%M") if attendance.started_at.present? %></td>

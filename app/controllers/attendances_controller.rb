@@ -30,21 +30,27 @@ class AttendancesController < ApplicationController
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
         if item[:change_superior_id].present?
-          attendance.update_attributes!(change_status: "申請中",
-                                        note: item[:note], 
-                                        change_next_day_check: item[:change_next_day_check], 
-                                        change_superior_id: item[:change_superior_id],                                          change_started_at: item[:started_at], 
-                                        change_finished_at: item[:finished_at])
-        else
-          attendance.update_attributes!(note: item[:note],
-                                        change_next_day_check: item[:change_next_day_check],
-                                        started_at: item[:started_at],finished_at: item[:finished_at])
+          if attendance.change_started_at.present? && attendance.change_finished_at.present?
+            attendance.update_attributes!(change_status: "申請中",
+                                          note: item[:note], 
+                                          change_next_day_check: item[:change_next_day_check], 
+                                          change_superior_id: item[:change_superior_id], 
+                                          apply_started_at: item[:change_started_at], 
+                                          apply_finished_at: item[:change_finished_at])
+          else
+            attendance.update_attributes!(change_status: "申請中",
+                                          note: item[:note], 
+                                          change_next_day_check: item[:change_next_day_check], 
+                                          change_superior_id: item[:change_superior_id], 
+                                          apply_started_at: item[:started_at], 
+                                          apply_finished_at: item[:finished_at])
+          end
         end
       end
         flash[:success] = "勤怠変更を申請しました。"
         redirect_to user_url(@user, params:{first_day: params[:date]})
     else
-        flash[:danger] = "不正な時間入力がありました、再入力してください"
+        flash[:danger] = "正しい時間入力、または上長を選択してください"
         redirect_to edit_attendances_path(@user, params[:date])   
     end
   end
@@ -128,7 +134,11 @@ class AttendancesController < ApplicationController
     if checked_change_apply?
       confirmation_change_apply_params.each do |id, item|
         attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
+        attendance.update_attributes!(change_started_at: item[:apply_started_at], 
+                                      change_finished_at: item[:apply_finished_at], 
+                                      change_status: item[:change_status], 
+                                      change_check: item[:change_check], 
+                                      approved_date: item[:approved_date])
       end
       flash[:success] = "勤怠変更申請の更新が完了しました"
       redirect_back(fallback_location: root_path)
@@ -151,7 +161,8 @@ class AttendancesController < ApplicationController
   private
     # 1ヶ月更新時のstrong_params
     def attendances_params
-      params.permit(attendances: [:started_at, :finished_at, :note, :change_next_day_check, :change_superior_id,
+      params.permit(attendances: [:started_at, :finished_at, :change_started_at, :change_finished_at, :note, 
+                                  :change_next_day_check, :change_superior_id,
                                   :change_status])[:attendances]
     end
     # １ヶ月申請時のstrong_params
@@ -173,7 +184,7 @@ class AttendancesController < ApplicationController
     end
 
     def confirmation_change_apply_params
-      params.permit(attendances: [:change_started_at, :change_finished_at, :change_status, :change_check, :approved_date])[:attendances]
+      params.permit(attendances: [:apply_started_at, :apply_finished_at, :change_status, :change_check, :approved_date])[:attendances]
     end
 
     def reguler_user
