@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def index
     @q = User.ransack(params[:q])
-    @users = @q.result(distinct: true).where.not(users:{id:1}).paginate(page: params[:page]).order(id:"asc")
+    @users = @q.result(distinct: true).where.not(admin: true).paginate(page: params[:page]).order(id:"asc")
   end
 
   def import
