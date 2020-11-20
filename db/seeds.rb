@@ -1,17 +1,24 @@
-User.create(name: "管理者",
-            email: "email@sample.com",
-            password: "password",
-            password_confirmation: "password",
-            admin: true,
-            uid: "101",
-            employee_number: "1001")
+2.times do |n|
+  name = Faker::Japanese::Name.name
+  email = "admin#{n+1}@sample.com"
+  password = "password"
+  uid = "#{n+101}"
+  employee_number = "#{n+1001}"
+  User.create!(name: name,
+              email: email,
+              password: password,
+              password_confirmation: password,
+              admin: true,
+              uid: uid,
+              employee_number: employee_number)
+end
             
-4.times do |n|
+2.times do |n|
   name = Faker::Japanese::Name.name
   email = "email#{n+1}@sample.com"
   password = "password"
-  uid = "#{n+102}"
-  employee_number = "#{n+1002}"
+  uid = "#{n+103}"
+  employee_number = "#{n+1003}"
   User.create!(name: name,
               email: email,
               password: password,
@@ -22,12 +29,12 @@ User.create(name: "管理者",
 end
 
 
-59.times do |n|
+2.times do |n|
   name = Faker::Japanese::Name.name
-  email = "email#{n+5}@sample.com"
+  email = "email#{n+3}@sample.com"
   password = "password"
-  uid = "#{n+106}"
-  employee_number = "#{n+1006}"
+  uid = "#{n+105}"
+  employee_number = "#{n+1005}"
   User.create!(name: name,
               email: email,
               password: password,

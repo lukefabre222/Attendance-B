@@ -125,8 +125,12 @@
             </td>
             <td>
               <% if day.change_started_at.present? && day.change_finished_at.present? %>
-                <%= working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
-                <% seconds = (day.change_finished_at.floor_to(15.minutes) - day.change_started_at.floor_to(15.minutes)).to_i %>
+                <%= working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes), day.change_next_day_check)%>
+                <% if day.change_next_day_check == 1 %>
+                  <% seconds = (day.change_finished_at.floor_to(15.minutes) - day.change_started_at.floor_to(15.minutes)  + 24.hour).to_i %>
+                <% else %>
+                  <% seconds = (day.change_finished_at.floor_to(15.minutes) - day.change_started_at.floor_to(15.minutes)).to_i %>
+                <% end %>
                 <% @total_seconds = @total_seconds.to_i + seconds %>
               <% end %>
             </td>
@@ -153,16 +157,23 @@
               <% end %>
             </td>
           <% end %>
+          <td><%= day.note unless day.change_status == "申請中" %></td>
 
-          <td><%= day.note %></td>
-          <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
-          <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present? %></td>
-          <% if day.overtime_end_time.present? && User.find(day.user_id).designated_work_end_time.present? %>
-            <td><%= over_work_times(day.overtime_end_time.floor_to(15.minutes), User.find(day.user_id).designated_work_end_time.floor_to(15.minutes)) %></td>
+          <% if day.overtime_apply_status == "承認" %>
+            <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
+            <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present?%></td>
+            <% if day.overtime_end_time.present? && User.find(day.user_id).designated_work_end_time.present? %>
+              <td><%= over_work_times(day.overtime_end_time.floor_to(15.minutes), User.find(day.user_id).designated_work_end_time.floor_to(15.minutes), day.next_day_check) %></td>
+            <% else %>
+              <td></td>
+            <% end %>
+            <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
           <% else %>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           <% end %>
-          <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
           <td>
             <% if day.overtime_apply_status == "申請中"%>
               残業申請：<%= User.find(day.overtime_superior_id).name %>へ申請中

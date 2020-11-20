@@ -48,6 +48,9 @@ class OfficesController < ApplicationController
   end
 
   def admin_user
-    redirect_to(root_url) unless current_user.admin?
+    unless current_user.admin?
+      redirect_to(root_url)
+      flash[:danger] = "管理者権限でログインしてください"
+    end
   end
 end

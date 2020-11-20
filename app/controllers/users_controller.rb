@@ -10,8 +10,13 @@ class UsersController < ApplicationController
   end
 
   def import
-    User.import(params[:file])
-    redirect_to users_path
+    if params[:file].present?
+      User.import(params[:file])
+      redirect_to users_path
+    else
+      flash[:danger] = "ファイルを選択してください" 
+      redirect_to users_path
+    end
   end
 
 
@@ -126,8 +131,10 @@ class UsersController < ApplicationController
     end
 
     def admin_user
-      redirect_to(root_url) unless current_user.admin?
-      flash[:danger] = "管理者権限でログインしてください"
+      unless current_user.admin?
+        redirect_to(root_url)
+        flash[:danger] = "管理者権限でログインしてください"
+      end
     end
 
     def reguler_user

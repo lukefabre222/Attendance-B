@@ -9,18 +9,26 @@ module AttendancesHelper
     )
   end
 
-  def working_times(started_at, finished_at)
-    format("%.2f", (((finished_at - started_at) / 60) / 60.0))
+  def working_times(started_at, finished_at, check_box)
+    if check_box == 1
+      format("%.2f", (((finished_at - started_at) / 60) / 60.0)+ 24 )
+    else
+      format("%.2f", (((finished_at - started_at) / 60) / 60.0))
+    end
   end
   
   def working_times_sum(seconds)
     format("%.2f", seconds/60/60.0)
   end
 
-  def over_work_times(overtime_end_time, designated_work_end_time)
+  def over_work_times(overtime_end_time, designated_work_end_time, check_box)
     finish_time = overtime_end_time.hour + overtime_end_time.min/60.0
     default_time = designated_work_end_time.hour + designated_work_end_time.min/60.0
-    format("%.2f", (finish_time-default_time))
+    if check_box == 1
+      format("%.2f", (finish_time - default_time + 24 ))
+    else
+      format("%.2f", (finish_time - default_time))
+    end
   end
 
   def first_day(date)
@@ -39,6 +47,9 @@ module AttendancesHelper
         next
       elsif item[:started_at].blank? || item[:finished_at].blank?
         attendances = false
+        break
+      elsif item[:started_at] > item[:finished_at] && item[:change_next_day_check] == "1"
+        attendances = true
         break
       elsif item[:started_at] > item[:finished_at]
         attendances = false

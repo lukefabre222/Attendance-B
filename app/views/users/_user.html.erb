@@ -1,7 +1,7 @@
 
 <li>
   <div>
-    <%= link_to user.name, user %>
+    <%= user.name%>
   </div>
   <% if current_user.admin? && !current_user?(user) %>
     <div>
