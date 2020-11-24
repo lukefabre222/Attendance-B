@@ -41,8 +41,7 @@ module AttendancesHelper
   
   def attendances_invalid?
     attendances = true
-    attendances_params.each do |id, item|
-      attendance = Attendance.find(id)
+    attendances_params.each do |id, item| 
       if item[:started_at].blank? && item[:finished_at].blank?
         next
       elsif item[:started_at].blank? || item[:finished_at].blank?
@@ -59,18 +58,27 @@ module AttendancesHelper
     return attendances
   end
 
-  def change_attendances?
+  def change_attendances_invalid?
     change_attendances = true
-    attendances_params.each do |id, item|
-      if item[:change_superior_id].blank?
+    attendances_params.each do |id, item| 
+      if item[:change_started_at].blank? && item[:change_finished_at].blank?
+        next
+      elsif item[:change_started_at].blank? || item[:change_finished_at].blank?
         change_attendances = false
-      else
+        break
+      elsif item[:change_started_at] > item[:change_finished_at] && item[:change_next_day_check] == "1"
         change_attendances = true
+        break
+      elsif item[:change_started_at] > item[:change_finished_at]
+        change_attendances = false
         break
       end
     end
     return change_attendances
   end
+
+
+  
 
   def checked_month_apply?
     month_apply_check = true

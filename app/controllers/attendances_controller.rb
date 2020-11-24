@@ -23,38 +23,47 @@ class AttendancesController < ApplicationController
     @dates = user_attendances_month_date
     @superiors = User.where(superior: true).where.not(id: current_user.id)
   end
-
+  
   def update
     @user = User.find(params[:id])
-    if attendances_invalid?
-      attendances_params.each do |id, item|
-        attendance = Attendance.find(id)
-        if item[:change_superior_id].present?
-          if attendance.change_started_at.present? && attendance.change_finished_at.present?
+    attendances_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if item[:change_superior_id].present?
+        if attendance.change_started_at.present? && attendance.change_finished_at.present?
+          if change_attendances_invalid?
             attendance.update_attributes!(change_status: "申請中",
-                                          note: item[:note], 
-                                          change_next_day_check: item[:change_next_day_check], 
-                                          change_superior_id: item[:change_superior_id], 
-                                          apply_started_at: item[:change_started_at], 
-                                          apply_finished_at: item[:change_finished_at])
+              note: item[:note], 
+              change_next_day_check: item[:change_next_day_check], 
+              change_superior_id: item[:change_superior_id], 
+              apply_started_at: item[:change_started_at], 
+              apply_finished_at: item[:change_finished_at])
+            flash[:success] = "勤怠変更を申請しました"
           else
+            flash[:danger] = "正しい時間を入力してください"
+            redirect_to edit_attendances_path(@user, params[:date]) and return
+          end
+        else
+          if attendances_invalid?
             attendance.update_attributes!(change_status: "申請中",
-                                          note: item[:note], 
-                                          change_next_day_check: item[:change_next_day_check], 
-                                          change_superior_id: item[:change_superior_id], 
-                                          apply_started_at: item[:started_at], 
-                                          apply_finished_at: item[:finished_at])
+              note: item[:note], 
+              change_next_day_check: item[:change_next_day_check], 
+              change_superior_id: item[:change_superior_id], 
+              apply_started_at: item[:started_at], 
+              apply_finished_at: item[:finished_at])
+            flash[:success] = "勤怠変更を申請しました"
+          else
+            flash[:danger] = "正しい時間を入力してください"
+            redirect_to edit_attendances_path(@user, params[:date]) and return
           end
         end
+      else
+        if item[:started_at].present? || item[:finished_at].present? || item[:change_started_at].present? || item[:change_finished_at].present?
+          flash[:danger] = "上長が選択できていない可能性があります、ご確認ください"
+        end
       end
-        flash[:success] = "勤怠変更を申請しました。"
-        redirect_to user_url(@user, params:{first_day: params[:date]})
-    else
-        flash[:danger] = "正しい時間入力、または上長を選択してください"
-        redirect_to edit_attendances_path(@user, params[:date])   
     end
+    redirect_to user_url(@user, date: params[:date])
   end
-
 
   def update_month_apply
     @user = User.find(params[:id])
