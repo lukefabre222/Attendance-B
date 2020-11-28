@@ -126,7 +126,7 @@ class UsersController < ApplicationController
 
     def correct_user
       @user = User.find(params[:id])
-      unless current_user = @user
+      unless current_user == @user
         redirect_to(root_url)
         flash[:danger] = "権限がないため、TOPへ戻りました"
       end
