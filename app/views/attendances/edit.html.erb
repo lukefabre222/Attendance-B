@@ -36,7 +36,7 @@
                 <td><%= af.check_box :change_next_day_check %></td>
               <td>
                 <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                  <%= working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.change_next_day_check) %>
                 <% end %>
               </td>
               <% end %>
@@ -51,7 +51,7 @@
       </tbody>
     </table>
     <div class="btn-attendances-update">
-      <%= f.submit "更新", class: "btn btn-primary" %>
+      <%= f.submit "編集を保存する", class: "btn btn-primary" %>
       <%= link_to "キャンセル", user_path(@user, params:{first_day: @first_day }), class: "btn btn-default btn-block" %>
     </div>
   <% end %>
