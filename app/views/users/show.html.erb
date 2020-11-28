@@ -181,10 +181,10 @@
           <% end %>
           <td>
             <% if day.overtime_apply_status == "申請中"%>
-              残業申請：<%= User.find(day.overtime_superior_id).name %>へ申請中
+              残業申請：<%= User.find(day.overtime_superior_id).name %>へ申請中<br>
             <% elsif day.overtime_superior_id.present? %>
               <p class="<%= "danger-notice" if day.overtime_apply_status == "否認" %>">
-                残業申請：<%= User.find(day.overtime_superior_id).name%>から<%= day.overtime_apply_status %>
+                残業申請：<%= User.find(day.overtime_superior_id).name%>から<%= day.overtime_apply_status %><br>
               </p>
             <% end %>
             <% if day.change_status == "申請中"%>

@@ -56,10 +56,6 @@ class AttendancesController < ApplicationController
             redirect_to edit_attendances_path(@user, params[:date]) and return
           end
         end
-      else
-        if item[:started_at].present? || item[:finished_at].present? || item[:change_started_at].present? || item[:change_finished_at].present?
-          flash[:danger] = "上長が選択できていない可能性があります、ご確認ください"
-        end
       end
     end
     redirect_to user_url(@user, date: params[:date])
@@ -112,49 +108,46 @@ class AttendancesController < ApplicationController
   end
 
   def confirmation_month_apply
-    if checked_month_apply?
-      confirmation_month_apply_params.each do |id, item|
-        attendance = Attendance.find(id)
+    confirmation_month_apply_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if item[:month_apply_check] == "0"
+        flash[:danger] = "変更にチェックが入っていない申請があります"
+      elsif item[:month_apply_check] == "1"
         attendance.update_attributes!(item)
+        flash[:success] = "１ヶ月勤怠申請の決済を更新しました"
       end
-      flash[:success] = "１ヶ月勤怠申請の決済を更新しました"
-      redirect_to user_url(:id => current_user.id)
-    else
-      flash[:danger] = "チェックを入れてから、送信してください"
-      redirect_back(fallback_location: root_path)
     end
+    redirect_to user_url(:id => current_user.id)
   end
 
   def confirmation_overtime_apply
-    if checked_overtime_apply?
-      confirmation_overtime_apply_params.each do |id, item|
-        attendance = Attendance.find(id)
+    confirmation_overtime_apply_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if item[:overtime_check] == "0"
+        flash[:danger] = "変更にチェックが入っていない申請があります"
+      elsif item[:overtime_check] == "1"
         attendance.update_attributes!(item)
+        flash[:success] = "残業申請の更新が完了しました"
       end
-      flash[:success] = "残業申請の更新が完了しました"
-      redirect_back(fallback_location: root_path)
-    else
-      flash[:danger] = "チェックを入れてから、送信してください"
-      redirect_to user_url(:id => current_user.id)
     end
+    redirect_to user_url(:id => current_user.id)
   end
 
   def confirmation_change_apply
-    if checked_change_apply?
-      confirmation_change_apply_params.each do |id, item|
-        attendance = Attendance.find(id)
+    confirmation_change_apply_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if item[:change_check] == "0"
+        flash[:danger] = "変更にチェックが入っていない申請があります"
+      elsif item[:change_check] == "1"
         attendance.update_attributes!(change_started_at: item[:apply_started_at], 
                                       change_finished_at: item[:apply_finished_at], 
                                       change_status: item[:change_status], 
                                       change_check: item[:change_check], 
                                       approved_date: item[:approved_date])
+        flash[:success] = "勤怠変更申請の更新が完了しました"
       end
-      flash[:success] = "勤怠変更申請の更新が完了しました"
-      redirect_back(fallback_location: root_path)
-    else
-      flash[:danger] = "チェックを入れてから、送信してください"
-      redirect_to user_url(:id => current_user.id)
     end
+    redirect_to user_url(:id => current_user.id)
   end
 
   def approved_attendance

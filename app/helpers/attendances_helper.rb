@@ -77,48 +77,6 @@ module AttendancesHelper
     return change_attendances
   end
 
-
-  
-
-  def checked_month_apply?
-    month_apply_check = true
-    confirmation_month_apply_params.each do |id, item|
-      if item[:month_apply_check] == "0"
-        month_apply_check = false
-      elsif item[:month_apply_check] == "1"
-        month_apply_check = true
-        break
-      end
-    end
-    month_apply_check
-  end
-
-  def checked_overtime_apply?
-    overtime_apply_check = true
-    confirmation_overtime_apply_params.each do |id, item|
-      if item[:overtime_check] == "0"
-        overtime_apply_check = false
-      elsif item[:overtime_check] == "1"
-        overtime_apply_check = true
-        break
-      end
-    end
-    overtime_apply_check
-  end
-
-  def checked_change_apply?
-    change_check = true
-    confirmation_change_apply_params.each do |id, item|
-      if item[:change_check] == "0"
-        change_check = false
-      elsif item[:change_chack] = "1"
-        change_check = true
-        break
-      end
-    end
-    change_check
-  end
-
   #　１ヶ月勤怠申請が自分に来ているか
   def has_month_apply
     User.joins(:attendances).where(attendances: {superior_id: current_user.id}).where(attendances: {month_apply_status: "申請中"})
