@@ -1,0 +1,26 @@
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/bcrypt-3.1.12/ext/mri
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20201201-26356-mitymp.rb extconf.rb
+creating Makefile
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/bcrypt-3.1.12/ext/mri
+make "DESTDIR=" clean
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/bcrypt-3.1.12/ext/mri
+make "DESTDIR="
+compiling bcrypt_ext.c
+compiling crypt.c
+compiling crypt_blowfish.c
+compiling crypt_gensalt.c
+compiling wrapper.c
+linking shared-object bcrypt_ext.bundle
+ld: warning: directory not found for option '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.Internal.sdk/usr/local/lib'
+ld: warning: ignoring file crypt.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file bcrypt_ext.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file crypt_blowfish.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file crypt_gensalt.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file wrapper.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: directory not found for option '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.Internal.sdk/usr/local/lib'
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/bcrypt-3.1.12/ext/mri
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bcrypt_ext.bundle ./.gem.20201201-26356-1d0vo84

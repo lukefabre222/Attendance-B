@@ -1,0 +1,26 @@
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/byebug-9.0.6/ext/byebug
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20201201-26356-656m7m.rb extconf.rb
+creating Makefile
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR=" clean
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR="
+compiling breakpoint.c
+compiling byebug.c
+compiling context.c
+compiling locker.c
+compiling threads.c
+linking shared-object byebug/byebug.bundle
+ld: warning: directory not found for option '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.Internal.sdk/usr/local/lib'
+ld: warning: ignoring file breakpoint.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file byebug.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file locker.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+ld: warning: ignoring file context.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64ld: warning: ignoring file threads.o, building for macOS-arm64e but attempting to link with file built for unknown-x86_64
+
+ld: warning: directory not found for option '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.Internal.sdk/usr/local/lib'
+
+current directory: /Users/uchiyamatatsuya/Attendance-B/vendor/cache/ruby/2.6.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 byebug.bundle ./.gem.20201201-26356-d4pc3p/byebug
