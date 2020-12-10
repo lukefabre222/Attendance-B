@@ -42,39 +42,38 @@ module AttendancesHelper
   def attendances_invalid?
     attendances = true
     attendances_params.each do |id, item| 
-      if item[:started_at].blank? && item[:finished_at].blank?
-        next
-      elsif item[:started_at].blank? || item[:finished_at].blank?
-        attendances = false
-        break
-      elsif item[:started_at] > item[:finished_at] && item[:change_next_day_check] == "1"
-        attendances = true
-        break
-      elsif item[:started_at] > item[:finished_at]
-        attendances = false
-        break
+      attendance = Attendance.find(id)
+      if item[:change_superior_id].present?
+        if attendance.change_started_at.present? && attendance.change_finished_at.present?
+          if item[:change_started_at].blank? && item[:change_finished_at].blank?
+            next
+          elsif item[:change_started_at].blank? || item[:change_finished_at].blank?
+            attendances = false
+            break
+          elsif item[:change_started_at] > item[:change_finished_at] && item[:change_next_day_check] == "1"
+            attendances = true
+            break
+          elsif item[:change_started_at] > item[:change_finished_at]
+            attendances = false
+            break
+          end
+        else
+          if item[:started_at].blank? && item[:finished_at].blank?
+            next
+          elsif item[:started_at].blank? || item[:finished_at].blank?
+            attendances = false
+            break
+          elsif item[:started_at] > item[:finished_at] && item[:change_next_day_check] == "1"
+            attendances = true
+            break
+          elsif item[:started_at] > item[:finished_at]
+            attendances = false
+            break
+          end
+        end
       end
     end
     return attendances
-  end
-
-  def change_attendances_invalid?
-    change_attendances = true
-    attendances_params.each do |id, item| 
-      if item[:change_started_at].blank? && item[:change_finished_at].blank?
-        next
-      elsif item[:change_started_at].blank? || item[:change_finished_at].blank?
-        change_attendances = false
-        break
-      elsif item[:change_started_at] > item[:change_finished_at] && item[:change_next_day_check] == "1"
-        change_attendances = true
-        break
-      elsif item[:change_started_at] > item[:change_finished_at]
-        change_attendances = false
-        break
-      end
-    end
-    return change_attendances
   end
 
   #　１ヶ月勤怠申請が自分に来ているか

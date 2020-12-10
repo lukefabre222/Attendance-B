@@ -26,39 +26,40 @@ class AttendancesController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    attendances_params.each do |id, item|
-      attendance = Attendance.find(id)
-      if item[:change_superior_id].present?
-        if attendance.change_started_at.present? && attendance.change_finished_at.present?
-          if change_attendances_invalid?
+    if attendances_invalid?
+      update_count = 0
+      attendances_params.each do |id, item|
+        if item[:change_superior_id].present?
+          attendance = Attendance.find(id) 
+          if attendance.change_started_at.present? && attendance.change_finished_at.present?
             attendance.update_attributes!(change_status: "申請中",
               note: item[:note], 
               change_next_day_check: item[:change_next_day_check], 
               change_superior_id: item[:change_superior_id], 
               apply_started_at: item[:change_started_at], 
               apply_finished_at: item[:change_finished_at])
-            flash[:success] = "勤怠変更を申請しました"
+              update_count = update_count + 1
           else
-            flash[:danger] = "正しい時間を入力してください"
-            redirect_to edit_attendances_path(@user, params[:date]) and return
-          end
-        else
-          if attendances_invalid?
             attendance.update_attributes!(change_status: "申請中",
               note: item[:note], 
               change_next_day_check: item[:change_next_day_check], 
               change_superior_id: item[:change_superior_id], 
               apply_started_at: item[:started_at], 
               apply_finished_at: item[:finished_at])
-            flash[:success] = "勤怠変更を申請しました"
-          else
-            flash[:danger] = "正しい時間を入力してください"
-            redirect_to edit_attendances_path(@user, params[:date]) and return
+              update_count = update_count +1
           end
         end
       end
+      if update_count > 0
+        flash[:success] = "勤怠変更を申請しました"
+      else
+        flash[:warning] = "勤怠を変更するには上長を選択してください"
+      end
+      redirect_to user_url(@user, date: params[:date])
+    else
+      flash[:danger] = "正しい時間を入力してください"
+      redirect_to edit_attendances_path(@user, params[:date])
     end
-    redirect_to user_url(@user, date: params[:date])
   end
 
   def update_month_apply
