@@ -113,7 +113,7 @@
           <td class='<%= "wday#{day.worked_on.wday}"%>'>
             <%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %>
           </td>
-          <% if day.change_started_at.present? && day.change_finished_at.present? && day.change_status == "承認" %>
+          <% if day.change_started_at.present? && day.change_finished_at.present? %>
             <td><%= day.change_started_at.floor_to(15.minutes).to_s(:hour) if day.change_started_at.present? %></td>
             <td><%= day.change_started_at.floor_to(15.minutes).to_s(:min) if day.change_started_at.present? %></td>
             <td>
