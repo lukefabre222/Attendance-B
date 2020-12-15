@@ -124,7 +124,7 @@
             <td><%= day.change_finished_at.to_s(:hour) if day.change_finished_at.present? %></td>
             <td><%= day.change_finished_at.floor_to(15.minutes).to_s(:min) if day.change_finished_at.present? %></td>
             <td>
-              <% if day.worked_on == Date.current && day.started_at.present? && day.change.finished_at.nil? %>
+              <% if day.worked_on == Date.current && day.change_started_at.present? && day.change_finished_at.nil? %>
                 <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" if current_user?(@user) %>
               <% end %>
             </td>
