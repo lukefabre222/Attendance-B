@@ -26,9 +26,9 @@
                     <tr>
                       <td class="center"><%= day.worked_on.to_s(:date) %></td>
                       <td class='center <%= "wday#{day.worked_on.wday}"%>'><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
-                      <td class="center"><%= at.time_select :overtime_end_time, {include_blank: true}, {class: "form-control"}%></td>
+                      <td class="center"><%= at.time_select :apply_overtime_end_time, {include_blank: true}, {class: "form-control"}%></td>
                       <td class="center"><%= at.check_box :next_day_check %></td>
-                      <td class="center"><%= at.text_field :overtime_detail, placeholder: "入力必須", class:"form-control" %></td>
+                      <td class="center"><%= at.text_field :apply_overtime_detail, placeholder: "入力必須", class:"form-control" %></td>
                       <td class="center">
                         <%= at.collection_select :overtime_superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>
                         <%= at.hidden_field :overtime_apply_status, value: "申請中" %>

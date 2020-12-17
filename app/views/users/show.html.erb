@@ -162,23 +162,18 @@
               <% end %>
             </td>
           <% end %>
-          <td><%= day.note if day.change_status == "" || day.change_status == "承認" %></td>
+          <td><%= day.note  %></td>
 
-          <% if day.overtime_apply_status == "承認" %>
-            <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
-            <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present?%></td>
-            <% if day.overtime_end_time.present? && User.find(day.user_id).designated_work_end_time.present? %>
-              <td><%= over_work_times(day.overtime_end_time.floor_to(15.minutes), User.find(day.user_id).designated_work_end_time.floor_to(15.minutes), day.next_day_check) %></td>
-            <% else %>
-              <td></td>
-            <% end %>
-            <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
+          
+          <td><%= day.overtime_end_time.to_s(:hour) if day.overtime_end_time.present? %></td>
+          <td><%= day.overtime_end_time.floor_to(15.minutes).to_s(:min) if day.overtime_end_time.present?%></td>
+          <% if day.overtime_end_time.present? && User.find(day.user_id).designated_work_end_time.present? %>
+            <td><%= over_work_times(day.overtime_end_time.floor_to(15.minutes), User.find(day.user_id).designated_work_end_time.floor_to(15.minutes), day.next_day_check) %></td>
           <% else %>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
           <% end %>
+          <td><%= day.overtime_detail if day.overtime_detail.present? %></td>
+          
           <td>
             <% if day.overtime_apply_status == "申請中"%>
               残業申請：<%= User.find(day.overtime_superior_id).name %>へ申請中<br>
@@ -216,12 +211,12 @@
                 <% @dates.each do |date| %>
                   <%= fields_for "attendances[]", date do |af| %>
                     <% if date.month_apply_status.blank? %>
-                      上長承認：未申請
+                      所属長承認：未申請
                     <% elsif date.month_apply_status == "申請中" %>
-                      上長承認：<%= User.find(date.superior_id).name %>へ申請中
+                      所属長承認：<%= User.find(date.superior_id).name %>へ申請中
                     <% else %>
                       <p class="<%= "danger-notice" if date.month_apply_status == "否認" %>">
-                      上長承認：<%= User.find(date.superior_id).name %>から<%= date.month_apply_status%>
+                      所属長承認：<%= User.find(date.superior_id).name %>から<%= date.month_apply_status%>
                       </p>
                     <% end %>
                     <%= af.collection_select :superior_id, @superiors, :id, :name, {include_blank: true, selected: nil}, {class: "form-control"} %>

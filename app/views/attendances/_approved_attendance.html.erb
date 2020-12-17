@@ -30,7 +30,7 @@
                   <th class="center">承認日</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody> 
                 <% @approved_attendances.each do |attendance|  %> 
                   <tr>
                     <td class="center"><%= attendance.worked_on.to_s(:date) %></td>

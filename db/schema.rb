@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_17_135157) do
+ActiveRecord::Schema.define(version: 2020_12_17_134517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,9 @@ ActiveRecord::Schema.define(version: 2020_11_17_135157) do
     t.datetime "approved_date"
     t.datetime "apply_started_at"
     t.datetime "apply_finished_at"
+    t.datetime "apply_overtime_end_time"
+    t.string "apply_overtime_detail"
+    t.string "apply_note"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

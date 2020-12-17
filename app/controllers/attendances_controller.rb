@@ -33,7 +33,7 @@ class AttendancesController < ApplicationController
           attendance = Attendance.find(id) 
           if attendance.change_started_at.present? && attendance.change_finished_at.present?
             attendance.update_attributes!(change_status: "申請中",
-              note: item[:note], 
+              apply_note: item[:note], 
               change_next_day_check: item[:change_next_day_check], 
               change_superior_id: item[:change_superior_id], 
               apply_started_at: item[:change_started_at], 
@@ -41,7 +41,7 @@ class AttendancesController < ApplicationController
               update_count = update_count + 1
           else
             attendance.update_attributes!(change_status: "申請中",
-              note: item[:note], 
+              apply_note: item[:note], 
               change_next_day_check: item[:change_next_day_check], 
               change_superior_id: item[:change_superior_id], 
               apply_started_at: item[:started_at], 
@@ -144,7 +144,8 @@ class AttendancesController < ApplicationController
                                       change_finished_at: item[:apply_finished_at], 
                                       change_status: item[:change_status], 
                                       change_check: item[:change_check], 
-                                      approved_date: item[:approved_date])
+                                      approved_date: item[:approved_date],
+                                      note: item[:apply_note])
         flash[:success] = "勤怠変更申請の更新が完了しました"
       end
     end
@@ -155,9 +156,9 @@ class AttendancesController < ApplicationController
     @q = Attendance.ransack(params[:q])
     if params[:q].present?
       search_date = "#{params[:q]["worked_on(1i)"]}-#{params[:q]["worked_on(2i)"]}-1"
-      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where(worked_on: search_date.in_time_zone.all_month).where(attendances:{change_status: "承認"})
+      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where(worked_on: search_date.in_time_zone.all_month).where.not(attendances:{change_started_at: [nil]})
     else
-      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where(attendances:{change_status: "承認"})
+      @approved_attendances = @q.result(distinct: true).where(attendances:{user_id: current_user.id}).where.not(attendances:{change_started_at: [nil]})
     end
   end
 
@@ -179,15 +180,16 @@ class AttendancesController < ApplicationController
     #残業申請時のstrong_params
     def overtime_apply_params
       params.permit(attendances: [:overtime_end_time,:next_day_check, :overtime_detail,:overtime_superior_id, 
-                                  :overtime_apply_status])[:attendances]
+                                  :overtime_apply_status,:apply_overtime_end_time,:apply_overtime_detail])[:attendances]
     end
     # 残業承認時のstrong_params
     def confirmation_overtime_apply_params
-      params.permit(attendances: [:overtime_apply_status, :overtime_check])[:attendances]
+      params.permit(attendances: [:overtime_apply_status, :overtime_check,:overtime_end_time,:overtime_detail,
+                                  :apply_overtime_end_time, :apply_overtime_Detail])[:attendances]
     end
 
     def confirmation_change_apply_params
-      params.permit(attendances: [:apply_started_at, :apply_finished_at, :change_status, :change_check, :approved_date])[:attendances]
+      params.permit(attendances: [:apply_started_at, :apply_finished_at, :change_status, :change_check, :approved_date, :apply_note])[:attendances]
     end
 
     def reguler_user
