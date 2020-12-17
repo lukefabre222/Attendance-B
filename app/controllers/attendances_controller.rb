@@ -126,8 +126,11 @@ class AttendancesController < ApplicationController
       attendance = Attendance.find(id)
       if item[:overtime_check] == "0"
         flash[:danger] = "変更にチェックが入っていない申請があります"
-      elsif item[:overtime_check] == "1"
+      elsif item[:overtime_check] == "1" && item[:overtime_apply_status] == "承認"
         attendance.update_attributes!(item)
+        flash[:success] = "残業申請の更新が完了しました"
+      else
+        attendance.update_attributes!(overtime_apply_status: item[:overtime_apply_status])
         flash[:success] = "残業申請の更新が完了しました"
       end
     end
@@ -139,13 +142,16 @@ class AttendancesController < ApplicationController
       attendance = Attendance.find(id)
       if item[:change_check] == "0"
         flash[:danger] = "変更にチェックが入っていない申請があります"
-      elsif item[:change_check] == "1"
+      elsif item[:change_check] == "1" && item[:change_status] == "承認"
         attendance.update_attributes!(change_started_at: item[:apply_started_at], 
                                       change_finished_at: item[:apply_finished_at], 
                                       change_status: item[:change_status], 
                                       change_check: item[:change_check], 
                                       approved_date: item[:approved_date],
                                       note: item[:apply_note])
+        flash[:success] = "勤怠変更申請の更新が完了しました"
+      else
+        attendance.update_attributes!(change_status: item[:change_status])
         flash[:success] = "勤怠変更申請の更新が完了しました"
       end
     end
