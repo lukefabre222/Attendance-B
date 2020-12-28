@@ -71,7 +71,7 @@
                             <%= at.hidden_field :apply_note, value: attendance.apply_note%>
                           </td>
                           <td class="center">
-                            <%= at.check_box :change_check %>
+                            <%= at.check_box :change_check, {:checked => false },checked_value = 1,unchecked_value = 0  %>
                           </td>
                           <td class="center"><%= link_to "確認", user_path(id: user.id, date: params[:date]), class: "btn btn-primary" %></td>
                         </tr>

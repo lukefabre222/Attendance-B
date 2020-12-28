@@ -22,7 +22,7 @@ ja:
         current_password: 現在のパスワード
         password: パスワード
         password_confirmation: パスワード(確認)
-        basic_time: 基準時間
+        basic_time: 基本勤務時間
         work_time: 勤務時間
         remember_me: ログインを記憶
         employee_number: 社員番号

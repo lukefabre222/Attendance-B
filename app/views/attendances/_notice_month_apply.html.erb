@@ -15,7 +15,7 @@
                   <table class="table table-condensed table-bordered table-hover">
                     <thead>
                       <tr>
-                        <th class="center">申請月</th>
+                        <th class="center">月</th>
                         <th class="center">指示者確認&#x329e;</th>
                         <th class="center">変更</th>
                         <th class="center">勤怠を確認する</th>
@@ -28,7 +28,7 @@
                           <td class="center">
                             <%= at.select :month_apply_status, ["なし", "申請中", "承認", "否認"], {}, class: "form-control" %>
                           </td>
-                          <td class="center"><%= at.check_box :month_apply_check %></td>
+                          <td class="center"><%= at.check_box :month_apply_check, {:checked => false },checked_value = 1,unchecked_value = 0  %></td>
                           <td class="center"><%= link_to "確認", user_path(id: user.id, date: attendance.month_apply_date), class: "btn btn-primary" %></td>
                         </tr>
                       </tbody>

@@ -17,7 +17,7 @@
                     <th class="center">終了予定時間</th>
                     <th class="center">指定勤務終了時間</th>
                     <th class="center">時間外時間</th>
-                    <th class="center">業務内容</th>
+                    <th class="center">業務処理内容</th>
                     <th class="center">指示者確認&#x329e;</th>
                     <th class="center">変更</th>
                     <th class="center">勤怠を確認する</th>
@@ -40,7 +40,7 @@
                           </td>
                           <%= at.hidden_field :overtime_end_time, value: attendance.apply_overtime_end_time %>
                           <%= at.hidden_field :overtime_detail, value: attendance.apply_overtime_detail %>
-                          <td class="center"><%= at.check_box :overtime_check %></td>
+                          <td class="center"><%= at.check_box :overtime_check, {:checked => false },checked_value = 1,unchecked_value = 0 %></td>
                           <td class="center"><%= link_to "確認", user_path(id: user.id, date: params[:date]), class: "btn btn-primary" %></td>
                         </tr>
                       </tbody>

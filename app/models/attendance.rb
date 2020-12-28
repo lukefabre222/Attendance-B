@@ -13,12 +13,10 @@ class Attendance < ApplicationRecord
   end
   
   def started_at_csv
-    unless change_status == "申請中"
-      if change_status == "承認"
-        change_started_at.strftime("%H:%M")
-      else
-        started_at.strftime("%H:%M") if started_at.present?
-      end
+    if change_started_at.present?
+      change_started_at.strftime("%H:%M")
+    elsif started_at.present?
+      started_at.strftime("%H:%m")
     else
       started_at = nil
       return started_at
@@ -26,12 +24,10 @@ class Attendance < ApplicationRecord
   end
 
   def finished_at_csv
-    unless change_status == "申請中"
-      if change_status == "承認"
-        change_finished_at.strftime("%H:%M")
-      else
-        finished_at.strftime("%H:%M") if finished_at.present?
-      end
+    if change_finished_at.present?
+      change_finished_at.strftime("%H:%M")
+    elsif finished_at.present?
+      finished_at.strftime("%H:%m")
     else
       finished_at = nil
       return finished_at

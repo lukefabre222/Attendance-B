@@ -104,14 +104,17 @@ module AttendancesHelper
 
   # 1ヶ月承認待ちのユーザー
   def month_applying_users
-    User.joins(:attendances).where.not(attendances:{superior_id: nil}).where(attendances: {month_apply_status: "申請中"})
+    User.joins(:attendances).where.not(attendances:{superior_id: nil}).where.not(attendances:{user_id: current_user.id})
+    .where(attendances: {month_apply_status: "申請中"})
   end
   # 残業承認まちのユーザー
   def overtime_applying_users
-    User.joins(:attendances).where.not(attendances:{overtime_superior_id: nil}).where(attendances:{overtime_apply_status: "申請中"}).distinct
+    User.joins(:attendances).where.not(attendances:{overtime_superior_id: nil}).where.not(attendances:{user_id: current_user.id})
+        .where(attendances:{overtime_apply_status: "申請中"}).distinct
   end
   # 変更承認待ちのユーザー
   def change_applying_users
-    User.joins(:attendances).where.not(attendances:{change_superior_id: nil}).where(attendances:{change_status: "申請中"}).distinct
+    User.joins(:attendances).where.not(attendances:{change_superior_id: nil}).where.not(attendances:{user_id: current_user.id})
+        .where(attendances:{change_status: "申請中"}).distinct
   end
 end
