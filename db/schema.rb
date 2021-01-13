@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_17_134517) do
+ActiveRecord::Schema.define(version: 2021_01_13_141238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2020_12_17_134517) do
     t.boolean "superior", default: false
     t.datetime "designated_work_start_time", default: "2019-02-20 01:00:00"
     t.datetime "designated_work_end_time", default: "2019-02-20 09:00:00"
-    t.integer "uid"
+    t.string "uid"
     t.integer "employee_number"
     t.index ["email"], name: "index_users_on_email", unique: true
   end

@@ -12,10 +12,10 @@ class User < ApplicationRecord
   validates :department, length: {in:3..50}, allow_blank: true
 
   def self.import(file)
-    CSV.foreach(file.path, encoding: "Shift_JIS:UTF-8", headers: true) do |row|
+    CSV.foreach(file.path, headers: true) do |row|
       user = new
       user.attributes = row.to_hash.slice(*updatable_attributes)
-      user.save!
+      user.save!(validates: false)
     end
   end
 

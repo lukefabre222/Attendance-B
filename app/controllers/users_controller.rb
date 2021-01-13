@@ -143,7 +143,7 @@ class UsersController < ApplicationController
     def reguler_user
       if current_user.admin?
         redirect_to(root_url)
-        flash.now[:danger] = "権限がないため、TOPへ戻りました"
+        flash[:danger] = "権限がないため、TOPへ戻りました"
       end
     end
 

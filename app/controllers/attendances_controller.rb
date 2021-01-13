@@ -199,6 +199,7 @@ class AttendancesController < ApplicationController
     end
 
     def reguler_user
+      flash[:danger] = "権限がないため、TOPへ移動しました"
       redirect_to root_path if current_user.admin?
     end
 end
